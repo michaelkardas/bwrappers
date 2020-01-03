@@ -1,0 +1,35 @@
+Package: bwrappers
+Title: Wrappers and other functions for the behavioral sciences
+Version: 0.0.0.9000
+Authors@R: person("Michael", "Kardas", email = "mkardas@chicagobooth.edu", role = c("aut", "cre"))
+Description: This package contains wrappers and other functions for more
+    efficiently cleaning, analyzing, and visualizing data in the behavioral
+    sciences. The functions do so by (1) tailoring syntax to the structure of
+    a typical data sheet in the behavioral sciences, (2) automating intermediate
+    steps such as splitting and reshaping data frames, and (3) returning statistics
+    in APA format and copying these outputs to the clipboard.
+Depends: R (>= 3.2.0)
+Imports:
+    devtools,
+    dplyr,
+    effsize,
+    ez,
+    ggplot2,
+    ggsignif,
+    gsubfn,
+    Hmisc,
+    lawstat,
+    lm.beta,
+    psychometric,
+    scales,
+    stats,
+    stringr,
+    tidyr,
+    utils
+Suggests:
+    car,
+    phia
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2

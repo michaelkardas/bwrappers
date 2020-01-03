@@ -1,0 +1,25 @@
+#' Sample data
+#'
+#' A sample data set containing three independent variables and several continuous,
+#' categorical, and discrete dependent variables.
+#'
+#' @format A data frame with 300 rows and 16 variables:
+#' \describe{
+#'   \item{IV1}{The first independent variable (\code{Friend} or \code{Stranger}})
+#'   \item{IV2}{The second independent variable (\code{PhotoA}, \code{PhotoB}, or \code{PhotoC}})
+#'   \item{IV3}{The third independent variable (\code{Negative} or \code{Positive}})
+#'   \item{DV1}{A continuous dependent variable, ranging from 0 to 10}
+#'   \item{DV2}{A categorical dependent variable (\code{Yes} or \code{No}})
+#'   \item{DV3_T1}{A discrete dependent variable, ranging from 0 to 10, measured at Time 1}
+#'   \item{DV4_T1}{A discrete dependent variable, ranging from 0 to 10, measured at Time 1}
+#'   \item{DV3_T2}{A discrete dependent variable, ranging from 0 to 10, measured at Time 2}
+#'   \item{DV4_T2}{A discrete dependent variable, ranging from 0 to 10, measured at Time 2}
+#'   \item{DV5}{A discrete dependent variable, ranging from 0 to 10}
+#'   \item{DV6}{A discrete dependent variable, ranging from 0 to 10}
+#'   \item{DV7}{A discrete dependent variable, ranging from 0 to 10}
+#'   \item{DV8}{A discrete dependent variable, ranging from 0 to 10}
+#'   \item{DV9}{A discrete dependent variable, ranging from 0 to 10}
+#' }
+#'
+#' @source The sample data were created using a random number generator
+"bdata"
