@@ -18,6 +18,7 @@
 #' # Linear regression with standardized coefficients
 #' wrap.lm(model = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
 #' @import stringr lm.beta stats
+#' @importFrom clipr write_clip
 #' @export
 wrap.lm <- function(model,standardized=FALSE) {
 
@@ -50,7 +51,7 @@ wrap.lm <- function(model,standardized=FALSE) {
                     sep="")
     }
     clip <- paste(substr(clip,1,nchar(clip)-1))
-    wrap.writeClipboard(clip)
+    write_clip(allow_non_interactive = TRUE, content = clip)
 
     return(
       for (i in 1:(nrow(summary$coefficients))) {
@@ -72,7 +73,7 @@ wrap.lm <- function(model,standardized=FALSE) {
       }
     }
     clip <- paste(substr(clip,1,nchar(clip)-1))
-    wrap.writeClipboard(clip)
+    write_clip(allow_non_interactive = TRUE, content = clip)
     clip <- ""
     return(
       for (i in 1:(nrow(summary$coefficients))) {

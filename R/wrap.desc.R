@@ -15,6 +15,7 @@
 #' wrap.desc(dv1 = bdata$DV5, iv1 = bdata$IV2)
 #'
 #' @import stringr
+#' @importFrom clipr write_clip
 #' @export
 wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
   options(scipen=999)
@@ -58,7 +59,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
       c <- b/sqrt(sum(!is.na(dv1)))
       d <- a-qt(c(.025,.975),sum(!is.na(dv1))-1)[2]*c
       e <- a+qt(c(.025,.975),sum(!is.na(dv1))-1)[2]*c
-      wrap.writeClipboard(paste("# N = ",sum(!is.na(dv1)),": M = ",wrap.rd0(a,2),", SD = ",wrap.rd0(b,2),", Var = ",wrap.rd0(b^2,2),", SE = ",wrap.rd0(c,2),", 95% CI = [",wrap.rd0(d),", ",wrap.rd0(e),"]",sep=""))
+      write_clip(allow_non_interactive = TRUE, content = paste("# N = ",sum(!is.na(dv1)),": M = ",wrap.rd0(a,2),", SD = ",wrap.rd0(b,2),", Var = ",wrap.rd0(b^2,2),", SE = ",wrap.rd0(c,2),", 95% CI = [",wrap.rd0(d),", ",wrap.rd0(e),"]",sep=""))
       return(cat("\n","# N = ",sum(!is.na(dv1)),": M = ",wrap.rd0(a,2),", SD = ",wrap.rd0(b,2),", Var = ",wrap.rd0(b^2,2),", SE = ",wrap.rd0(c,2),", 95% CI = [",wrap.rd0(d),", ",wrap.rd0(e),"]",sep=""))
     }
     # categorical dependent measures
@@ -82,7 +83,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
           clip <- paste(clip,", ",sum(dv1==levels(dv1)[j],na.rm=T)," ",levels(dv1)[j]," (",wrap.rd0(dv1.list[[j]],2),"%)",sep="")
         }
       }
-      wrap.writeClipboard(paste(clip))
+      write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       string <- cat("# N = ",sum(!is.na(dv1)),": ",sep="")
       return(for (j in 1:levels_dv1) {
@@ -124,7 +125,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
       }
 
       clip <- paste(substr(clip,1,nchar(clip)-2))
-      wrap.writeClipboard(paste(clip))
+      write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       e <- "\n"
       return(for (j in 1:i) {
@@ -191,7 +192,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
       clip <- gsub("))%","%)",x=clip,fixed=T)
       clip <- gsub("%%)","%)",x=clip,fixed=T)
       clip <- gsub("%)0)%","%)",x=clip,fixed=T)
-      wrap.writeClipboard(paste(clip))
+      write_clip(allow_non_interactive = TRUE, content = paste(clip))
       return(cat(clip))
     }
   }
@@ -266,7 +267,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
         }
       }
       clip <- paste(substr(clip,1,nchar(clip)-1))
-      wrap.writeClipboard(paste(clip))
+      write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       string <- ""
       return(for (i in 1:nlevels_iv2) {
@@ -327,7 +328,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
         }
       }
       clip <- paste(substr(clip,1,nchar(clip)-1))
-      wrap.writeClipboard(paste(clip))
+      write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       string <- ""
       return(for (i in 1:nlevels_iv1) {

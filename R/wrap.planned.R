@@ -19,6 +19,7 @@
 #' "PhotoC"), weights = c(-1, 0.5, 0.5))
 #'
 #' @import stringr
+#' @importFrom clipr write_clip
 #' @export
 wrap.planned <- function(dv1,iv1,levels,weights) {
 
@@ -80,12 +81,12 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
 
   print("ASSUMPTIONS: The function assumes categorical (i.e., unordered) independent variables, fixed effects, and equal variance across conditions.")
   if (p >= .001) {
-    wrap.writeClipboard(paste("# t(",df,") = ",wrap.rd0(t,2),", p = ",wrap.rd(p,3),", 95% CIdifference = [",wrap.rd0(CIlower,2),", ",wrap.rd0(CIupper,2),"], d = ",wrap.rd0(d,2),sep=""))
+    write_clip(allow_non_interactive = TRUE, content = paste("# t(",df,") = ",wrap.rd0(t,2),", p = ",wrap.rd(p,3),", 95% CIdifference = [",wrap.rd0(CIlower,2),", ",wrap.rd0(CIupper,2),"], d = ",wrap.rd0(d,2),sep=""))
     return(cat("\n","# t(",df,") = ",wrap.rd0(t,2),", p = ",wrap.rd(p,3),", 95% CIdifference = [",wrap.rd0(CIlower,2),", ",wrap.rd0(CIupper,2),"], d = ",wrap.rd0(d,2),sep=""))
   }
 
   if (p < .001) {
-    wrap.writeClipboard(paste("# t(",df,") = ",wrap.rd0(t,2),", p < .001, 95% CIdifference = [",wrap.rd0(CIlower,2),", ",wrap.rd0(CIupper,2),"], d = ",wrap.rd0(d,2),sep=""))
+    write_clip(allow_non_interactive = TRUE, content = paste("# t(",df,") = ",wrap.rd0(t,2),", p < .001, 95% CIdifference = [",wrap.rd0(CIlower,2),", ",wrap.rd0(CIupper,2),"], d = ",wrap.rd0(d,2),sep=""))
     return(cat("\n","# t(",df,") = ",wrap.rd0(t,2),", p < .001, 95% CIdifference = [",wrap.rd0(CIlower,2),", ",wrap.rd0(CIupper,2),"], d = ",wrap.rd0(d,2),sep=""))
   }
 }

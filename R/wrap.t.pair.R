@@ -11,6 +11,7 @@
 #' wrap.t.pair(dv1 = bdata$DV3_T1, dv2 = bdata$DV3_T2)
 #'
 #' @import effsize stringr stats
+#' @importFrom clipr write_clip
 #' @export
 wrap.t.pair  <- function(dv1, dv2) {
   options(scipen=999)
@@ -33,12 +34,12 @@ wrap.t.pair  <- function(dv1, dv2) {
   b <- (cohen.d(dv1,dv2,paired=T,na.rm=T)$estimate)
 
   if(a$p.value < .001) {
-    wrap.writeClipboard(paste("# paired t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
+    write_clip(allow_non_interactive = TRUE, content = paste("# paired t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
     return(cat("\n","# paired t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
   }
 
   else {
-    wrap.writeClipboard(paste("# paired t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
+    write_clip(allow_non_interactive = TRUE, content = paste("# paired t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
     return(cat("# paired t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
   }
 }

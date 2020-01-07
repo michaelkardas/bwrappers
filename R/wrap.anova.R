@@ -25,6 +25,7 @@
 #' wrap.anova(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV2)
 #' @import stringr effsize ez tidyr
 #' @importFrom dplyr one_of
+#' @importFrom clipr write_clip
 #' @export
 wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
 
@@ -125,7 +126,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
-      wrap.writeClipboard(
+      write_clip(allow_non_interactive = TRUE, content = 
         paste("# ",iv1name," (main effect): F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
               "\n","# ",iv2name," (main effect): F(",Anova$DFn[3],", ",Anova$DFd[3],") = ",wrap.rd0(Anova$F[3],2),", p",if (as.numeric(Anova$p[3]) < .001) {" < .001"},if (as.numeric(Anova$p[3]) >= .001) {" = "},if (as.numeric(Anova$p[3]) >= .001) {wrap.rd(Anova$p[3],3)},", hp2 = ",wrap.rd(Anova$SSn[3]/(Anova$SSn[3]+Anova$SSd[3]),2),
               "\n","# ",iv3name," (main effect): F(",Anova$DFn[4],", ",Anova$DFd[4],") = ",wrap.rd0(Anova$F[4],2),", p",if (as.numeric(Anova$p[4]) < .001) {" < .001"},if (as.numeric(Anova$p[4]) >= .001) {" = "},if (as.numeric(Anova$p[4]) >= .001) {wrap.rd(Anova$p[4],3)},", hp2 = ",wrap.rd(Anova$SSn[4]/(Anova$SSn[4]+Anova$SSd[4]),2),
@@ -176,7 +177,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
-      wrap.writeClipboard(
+      write_clip(allow_non_interactive = TRUE, content = 
         paste("# ",iv1name," (main effect): F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
               "\n","# ",iv2name," (main effect): F(",Anova$DFn[3],", ",Anova$DFd[3],") = ",wrap.rd0(Anova$F[3],2),", p",if (as.numeric(Anova$p[3]) < .001) {" < .001"},if (as.numeric(Anova$p[3]) >= .001) {" = "},if (as.numeric(Anova$p[3]) >= .001) {wrap.rd(Anova$p[3],3)},", hp2 = ",wrap.rd(Anova$SSn[3]/(Anova$SSn[3]+Anova$SSd[3]),2),
               "\n","# ",iv1name," x ",iv2name," (2-way interaction): F(",Anova$DFn[4],", ",Anova$DFd[4],") = ",wrap.rd0(Anova$F[4],2),", p",if (as.numeric(Anova$p[4]) < .001) {" < .001"},if (as.numeric(Anova$p[4]) >= .001) {" = "},if (as.numeric(Anova$p[4]) >= .001) {wrap.rd(Anova$p[4],3)},", hp2 = ",wrap.rd(Anova$SSn[4]/(Anova$SSn[4]+Anova$SSd[4]),2),
@@ -216,7 +217,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
-      wrap.writeClipboard(
+      write_clip(allow_non_interactive = TRUE, content = 
         paste("# F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
               sep="")
       )
@@ -258,12 +259,12 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
       data_frame$userAnovaIDNum <- NULL
 
       if (Anova$p[2]<.001) {
-        wrap.writeClipboard(paste(" # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p < .001",", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
+        write_clip(allow_non_interactive = TRUE, content = paste(" # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p < .001",", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
         return(cat("\n"," # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p < .001",", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
       }
 
       else {
-        wrap.writeClipboard(paste(" # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p = ",wrap.rd(Anova$p[2],3),", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
+        write_clip(allow_non_interactive = TRUE, content = paste(" # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p = ",wrap.rd(Anova$p[2],3),", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
         return(cat("\n"," # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p = ",wrap.rd(Anova$p[2],3),", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
       }
     }
@@ -295,7 +296,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
       data_frame$userAnovaIDNum <- NULL
 
-      wrap.writeClipboard(
+      write_clip(allow_non_interactive = TRUE, content = 
         paste("# ",iv1name," (main effect): F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
               "\n","# Within-Subjects (main effect): F(",Anova$DFn[3],", ",Anova$DFd[3],") = ",wrap.rd0(Anova$F[3],2),", p",if (as.numeric(Anova$p[3]) < .001) {" < .001"},if (as.numeric(Anova$p[3]) >= .001) {" = "},if (as.numeric(Anova$p[3]) >= .001) {wrap.rd(Anova$p[3],3)},", hp2 = ",wrap.rd(Anova$SSn[3]/(Anova$SSn[3]+Anova$SSd[3]),2),
               "\n","# ",iv1name," x Within-Subjects (2-way interaction): F(",Anova$DFn[4],", ",Anova$DFd[4],") = ",wrap.rd0(Anova$F[4],2),", p",if (as.numeric(Anova$p[4]) < .001) {" < .001"},if (as.numeric(Anova$p[4]) >= .001) {" = "},if (as.numeric(Anova$p[4]) >= .001) {wrap.rd(Anova$p[4],3)},", hp2 = ",wrap.rd(Anova$SSn[4]/(Anova$SSn[4]+Anova$SSd[4]),2),
@@ -339,7 +340,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
       data_frame$userAnovaIDNum <- NULL
 
-      wrap.writeClipboard(
+      write_clip(allow_non_interactive = TRUE, content = 
         paste("# ",iv1name," (main effect): F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
               "\n","# ",iv2name," (main effect): F(",Anova$DFn[3],", ",Anova$DFd[3],") = ",wrap.rd0(Anova$F[3],2),", p",if (as.numeric(Anova$p[3]) < .001) {" < .001"},if (as.numeric(Anova$p[3]) >= .001) {" = "},if (as.numeric(Anova$p[3]) >= .001) {wrap.rd(Anova$p[3],3)},", hp2 = ",wrap.rd(Anova$SSn[3]/(Anova$SSn[3]+Anova$SSd[3]),2),
               "\n","# Within-Subjects (main effect): F(",Anova$DFn[4],", ",Anova$DFd[4],") = ",wrap.rd0(Anova$F[4],2),", p",if (as.numeric(Anova$p[4]) < .001) {" < .001"},if (as.numeric(Anova$p[4]) >= .001) {" = "},if (as.numeric(Anova$p[4]) >= .001) {wrap.rd(Anova$p[4],3)},", hp2 = ",wrap.rd(Anova$SSn[4]/(Anova$SSn[4]+Anova$SSd[4]),2),
@@ -394,7 +395,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
       data_frame$userAnovaIDNum <- NULL
 
-      wrap.writeClipboard(
+      write_clip(allow_non_interactive = TRUE, content = 
         paste("# ", iv1name," (main effect): F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
               "\n","# ",iv2name, " (main effect): F(",Anova$DFn[3],", ",Anova$DFd[3],") = ",wrap.rd0(Anova$F[3],2),", p",if (as.numeric(Anova$p[3]) < .001) {" < .001"},if (as.numeric(Anova$p[3]) >= .001) {" = "},if (as.numeric(Anova$p[3]) >= .001) {wrap.rd(Anova$p[3],3)},", hp2 = ",wrap.rd(Anova$SSn[3]/(Anova$SSn[3]+Anova$SSd[3]),2),
               "\n","# ",iv3name, " (main effect): F(",Anova$DFn[4],", ",Anova$DFd[4],") = ",wrap.rd0(Anova$F[4],2),", p",if (as.numeric(Anova$p[4]) < .001) {" < .001"},if (as.numeric(Anova$p[4]) >= .001) {" = "},if (as.numeric(Anova$p[4]) >= .001) {wrap.rd(Anova$p[4],3)},", hp2 = ",wrap.rd(Anova$SSn[4]/(Anova$SSn[4]+Anova$SSd[4]),2),

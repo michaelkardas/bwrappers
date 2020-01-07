@@ -13,6 +13,7 @@
 #' wrap.t.ind(dv1 = bdata$DV5, iv1 = bdata$IV1)
 #'
 #' @import effsize stringr stats
+#' @importFrom clipr write_clip
 #' @export
 wrap.t.ind  <- function(dv1, iv1, var.equal = T) {
   options(scipen=999)
@@ -61,24 +62,24 @@ wrap.t.ind  <- function(dv1, iv1, var.equal = T) {
 
   if(var.equal==F) {
     if(a$p.value < .001) {
-      wrap.writeClipboard(paste("# t(",wrap.rd0(a$parameter,2),") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
+      write_clip(allow_non_interactive = TRUE, content = paste("# t(",wrap.rd0(a$parameter,2),") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
       return(cat("\n","# t(",wrap.rd0(a$parameter,2),") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
     }
 
     else {
-      wrap.writeClipboard(paste("# t(",wrap.rd0(a$parameter,2),") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
+      write_clip(allow_non_interactive = TRUE, content = paste("# t(",wrap.rd0(a$parameter,2),") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
       return(cat("\n","# t(",wrap.rd0(a$parameter,2),") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
     }
   }
 
   if(var.equal==T) {
     if(a$p.value < .001) {
-      wrap.writeClipboard(paste("# t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
+      write_clip(allow_non_interactive = TRUE, content = paste("# t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
       return(cat("\n","# t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
     }
 
     else {
-      wrap.writeClipboard(paste("# t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
+      write_clip(allow_non_interactive = TRUE, content = paste("# t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
       return(cat("\n","# t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
     }
   }

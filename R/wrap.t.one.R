@@ -11,6 +11,7 @@
 #' @examples
 #' wrap.t.one(dv1 = bdata$DV5, mu = 5)
 #' @import effsize stringr stats
+#' @importFrom clipr write_clip
 #' @export
 wrap.t.one  <- function(dv1, mu = 0) {
   options(scipen=999)
@@ -31,11 +32,11 @@ wrap.t.one  <- function(dv1, mu = 0) {
 
   # Produce output
   if(a$p.value < .001) {
-    wrap.writeClipboard(paste("# one-sample t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001", ", 95% CI = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
+    write_clip(allow_non_interactive = TRUE, content = paste("# one-sample t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001", ", 95% CI = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
     return(cat("# one-sample t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001", ", 95% CI = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
   }
   else {
-    wrap.writeClipboard(paste("# one-sample t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CI = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
+    write_clip(allow_non_interactive = TRUE, content = paste("# one-sample t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CI = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
     return(cat("# one-sample t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CI = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
   }
 }

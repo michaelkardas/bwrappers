@@ -10,6 +10,7 @@ Description: This package contains wrappers and other functions for more
     in APA format and copying these outputs to the clipboard.
 Depends: R (>= 3.2.0)
 Imports:
+    clipr,
     devtools,
     dplyr,
     effsize,
@@ -24,8 +25,7 @@ Imports:
     scales,
     stats,
     stringr,
-    tidyr,
-    utils
+    tidyr
 Suggests:
     car,
     phia

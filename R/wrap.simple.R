@@ -18,6 +18,7 @@
 #' wrap.simple(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2)
 #'
 #' @import stringr effsize stats
+#' @importFrom clipr write_clip
 #' @export
 wrap.simple <- function(dv1,iv1,iv2,adjustment="none") {
 
@@ -76,7 +77,7 @@ wrap.simple <- function(dv1,iv1,iv2,adjustment="none") {
   for (i in 1:levels_iv2) {
     clip <- paste(clip,"# ",rownames(interaction)[i],": ","F(",interaction$Df[i],", ",interaction$Df[levels_iv2+1],") = ",wrap.rd0(interaction$F[i],2),", p",if(as.numeric(interaction$'Pr(>F)'[i]) < .001) {" < .001"},if(as.numeric(interaction$'Pr(>F)'[i]) >= .001) {" = "},if (as.numeric(interaction$'Pr(>F)'[i]) >= .001) {wrap.rd((interaction$'Pr(>F)'[i]),3)},", hp2 = ",wrap.rd(hp2.list[[i]],2),sep="")
   }
-  wrap.writeClipboard(clip)
+  write_clip(allow_non_interactive = TRUE, content = clip)
   options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
   return(

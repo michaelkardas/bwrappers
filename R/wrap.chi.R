@@ -18,6 +18,7 @@
 #' wrap.chi(dv1 = bdata$DV2, iv1 = bdata$IV2)
 #'
 #' @import stringr stats
+#' @importFrom clipr write_clip
 #' @export
 wrap.chi <- function(dv1,iv1=NULL,p=rep(1/nlevels(factor(dv1)),nlevels(factor(dv1))),correct=F) {
   options(scipen=999)
@@ -74,11 +75,11 @@ wrap.chi <- function(dv1,iv1=NULL,p=rep(1/nlevels(factor(dv1)),nlevels(factor(dv
   }
 
   if(b$p.value < .001) {
-    wrap.writeClipboard(paste("# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p < .001",sep=""))
+    write_clip(allow_non_interactive = TRUE, content = paste("# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p < .001",sep=""))
     return(cat("\n","# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p < .001",sep=""))
   }
   else {
-    wrap.writeClipboard(paste("# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p = ",wrap.rd(b$p.value,3),sep=""))
+    write_clip(allow_non_interactive = TRUE, content = paste("# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p = ",wrap.rd(b$p.value,3),sep=""))
     return(cat("\n","# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p = ",wrap.rd(b$p.value,3),sep=""))
   }
 }
