@@ -29,7 +29,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
   if(is.null(iv2)==F) {if(is.data.frame(iv2)) {if(ncol(iv2)>1) {return("Error: Must input one column maximum for iv2.")}}}
   if(is.data.frame(dv1)) {if(ncol(dv1)>1) {return("Error: Must input one column maximum for dv1.")}}
   if(is.null(iv1)==F&is.null(iv2)==F) {if(substitute(iv1)==substitute(iv2)) {return("Error: You inputted the same column for iv1 and iv2.")}}
-  if(class(dv1)=="numeric"|class(dv1)=="integer") {print("ASSUMPTIONS: Note that the function uses a t statistic to compute confidence intervals.")}
+  if(class(dv1)=="numeric"|class(dv1)=="integer") {print("ASSUMPTIONS: Note that the function uses a t distribution to compute confidence intervals.")}
   if(is.null(iv1)==T) {
     if(any(is.na(dv1))) {print("Note: Your inputs include one or more NA entries. The function will ignore the rows containing these entries.")}
     dv1 <- dv1[complete.cases(dv1)]

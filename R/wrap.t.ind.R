@@ -31,7 +31,7 @@ wrap.t.ind  <- function(dv1, iv1, var.equal = T) {
   iv1 <- iv1[complete.cases]
 
   iv1 <- factor(iv1)
-  if(nlevels(iv1)!=2){return(cat("# Error: iv1 must have exactly 2 levels"))}
+  if(nlevels(iv1)!=2){return(print("# Error: iv1 must have exactly 2 levels"))}
 
   # collect condition names
   condition1 <- levels(iv1)[1]; condition2 <- levels(iv1)[2]

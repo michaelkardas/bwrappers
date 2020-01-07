@@ -25,11 +25,11 @@ wrap.simple <- function(dv1,iv1,iv2,adjustment="none") {
   options(contrasts = c('contr.sum','contr.poly'))
 
   if (!requireNamespace("phia", quietly = TRUE)) {
-    stop("This function requires first installing the package \"phia\". Please install this package.",
+    stop("This function requires first installing the package \"phia\" (the \"phia\" package does not download automatically during bwrappers installation). Please install this package.",
          call. = FALSE)
   }
   if (!requireNamespace("car", quietly = TRUE)) {
-    stop("This function requires first installing the package \"car\". Please install this package.",
+    stop("This function requires first installing the package \"car\" (the \"car\" package does not download automatically during bwrappers installation). Please install this package.",
          call. = FALSE)
   }
 

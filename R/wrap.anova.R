@@ -24,6 +24,7 @@
 #' ## ANOVA with 1 within-subjects factor & 2 between-subjects factors
 #' wrap.anova(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV2)
 #' @import stringr effsize ez tidyr
+#' @importFrom dplyr one_of
 #' @export
 wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
 
