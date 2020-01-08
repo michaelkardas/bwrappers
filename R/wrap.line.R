@@ -63,6 +63,8 @@ wrap.line <- function(dv1,iv1=NULL,iv2=NULL,reposition=NULL,rename1=NULL,
       return("Error: Each column in the dv1 parameter must be numeric.")
     }
   }
+  if(is.null(iv1)==F) {if(is.factor(iv1)==F) {return("Error: Must input a factor variable for iv1.")}}
+  if(is.null(iv2)==F) {if(is.factor(iv2)==F) {return("Error: Must input a factor variable for iv2.")}}
 
   # Formatting
   title <- gsub("\\_"," ",title)

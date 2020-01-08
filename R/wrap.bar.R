@@ -64,10 +64,13 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,reposition=NULL,
   if(is.null(iv1)==F) {if(is.data.frame(iv1)) {if(ncol(iv1)>1) {return("Error: Must input one column maximum for iv1.")}}}
   if(is.null(iv2)==F) {if(is.data.frame(iv2)) {if(ncol(iv2)>1) {return("Error: Must input one column maximum for iv2.")}}}
   if(is.null(iv3)==F) {if(is.data.frame(iv3)) {if(ncol(iv3)>1) {return("Error: Must input one column maximum for iv3.")}}}
+  if(is.null(iv1)==F) {if(is.factor(iv1)==F) {return("Error: Must input a factor variable for iv1.")}}
+  if(is.null(iv2)==F) {if(is.factor(iv2)==F) {return("Error: Must input a factor variable for iv2.")}}
+  if(is.null(iv3)==F) {if(is.factor(iv3)==F) {return("Error: Must input a factor variable for iv3.")}}
   if(is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {return("Error: You inputted 1 within-subjects factor and 3 between-subjects factors. Must input 3 factors maximum.")}
   if(is.null(ylim)==F) {if(length(ylim)!=2) {return("Error: ylim must have two elements (e.g., ylim = c(0,10)).")}}
   if(is.null(ylim)==T&is.null(ymajor)==F) {return("Error: Must input argument ylim (y-axis limits) to specify ymajor (major y-axis gridlines).")}
-
+  
   # Formatting
   if(is.null(title)==T & grepl("\\$",toString(substitute(dv1)))==T& is.data.frame(dv1)==F) {title <- toString(substring(deparse(substitute(as.numeric(dv1))),str_locate_all(pattern=coll('$'),deparse(substitute(as.numeric(dv1))))[[1]][1]+1,nchar(deparse(substitute(as.numeric(dv1))))-1))}
   if(is.null(title)==T & grepl("\\[",toString(substitute(dv1)))==T& is.data.frame(dv1)==F) {df_temp <- get(substr(deparse(substitute(dv1)),1,which(strsplit(deparse(substitute(dv1)), "")[[1]]=="[")-1),envir = .GlobalEnv); title <- names(df_temp)[substitute(dv1)[[3]]]}

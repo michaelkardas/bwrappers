@@ -39,7 +39,7 @@ wrap.hist <- function(dv1,likert=F,percent=T,binwidth=1,xlim=NULL,
                       size.axis.text.x=12,size.title=24) {
 
   # Error checks
-  if(is.numeric(dv1)==F) {return("Error: dv1 must be numeric.")}
+  if(is.numeric(dv1)==F) {return("Error: Argument dv1 must be numeric.")}
   if(is.null(likert)==T) {return("Error: Likert parameter must equal TRUE or FALSE.")}
   if(length(likert)>1|(likert!=TRUE&likert!=FALSE)) {return("Error: Likert parameter must equal TRUE or FALSE.")}
   if(likert==T&binwidth!=1) {return("Error: Must input binwidth=1 for Likert scale DVs.")}

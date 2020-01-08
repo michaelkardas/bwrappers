@@ -24,6 +24,7 @@ wrap.lm <- function(model,standardized=FALSE) {
 
   # Error checks
   if(standardized!=FALSE&standardized!=TRUE) {return("Argument \"standardized\" must be equal to FALSE or TRUE.")}
+  print(paste("Note: Your contrast options are currently set to unordered = ",options('contrasts')$contrasts[[1]],", ordered = ",options('contrasts')$contrasts[[2]],sep=""))
   data <- lm(model)$model
   if(nrow(data)!=rownames(data)[nrow(data)]) {print("Note: Your inputs include one or more NA entries. The function will ignore the rows containing these entries.")}
   summary <- summary(lm.beta(lm(model)))

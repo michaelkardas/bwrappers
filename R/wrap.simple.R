@@ -26,11 +26,11 @@ wrap.simple <- function(dv1,iv1,iv2,adjustment="none") {
   options(contrasts = c('contr.sum','contr.poly'))
 
   if (!requireNamespace("phia", quietly = TRUE)) {
-    stop("This function requires first installing the package \"phia\" (the \"phia\" package does not download automatically during bwrappers installation). Please install this package.",
+    stop("This function requires first installing the \"phia\" package. Please install this package. (To ensure that the bwrappers package would remain compatible with older versions of R, the package did not attempt to download \"phia\" during the initial installation from GitHub.",
          call. = FALSE)
   }
   if (!requireNamespace("car", quietly = TRUE)) {
-    stop("This function requires first installing the package \"car\" (the \"car\" package does not download automatically during bwrappers installation). Please install this package.",
+    stop("This function requires first installing the \"car\" package. Please install this package. (To ensure that the bwrappers package would remain compatible with older versions of R, the package did not attempt to download \"car\" during the initial installation from GitHub.",
          call. = FALSE)
   }
 
@@ -77,6 +77,7 @@ wrap.simple <- function(dv1,iv1,iv2,adjustment="none") {
   for (i in 1:levels_iv2) {
     clip <- paste(clip,"# ",rownames(interaction)[i],": ","F(",interaction$Df[i],", ",interaction$Df[levels_iv2+1],") = ",wrap.rd0(interaction$F[i],2),", p",if(as.numeric(interaction$'Pr(>F)'[i]) < .001) {" < .001"},if(as.numeric(interaction$'Pr(>F)'[i]) >= .001) {" = "},if (as.numeric(interaction$'Pr(>F)'[i]) >= .001) {wrap.rd((interaction$'Pr(>F)'[i]),3)},", hp2 = ",wrap.rd(hp2.list[[i]],2),"\n",sep="")
   }
+  clip <- substr(clip,1,nchar(clip)-1)
   write_clip(allow_non_interactive = TRUE, content = clip)
   options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
