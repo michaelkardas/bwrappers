@@ -25,8 +25,6 @@
 wrap.planned <- function(dv1,iv1,levels,weights) {
 
   options(scipen=999)
-  x <- options('contrasts') # store original contrasts
-  options(contrasts = c('contr.sum','contr.poly'))
 
   # Error checks
   if(is.null(dv1)) {return(paste("Cannot find the column vector inputted to parameter dv1."))}
@@ -52,6 +50,8 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
 
   if(positive!=1|negative!=1) {return("Contrast weights must sum to +1 and -1.")}
 
+  x <- options('contrasts') # store original contrasts
+  options(contrasts = c('contr.sum','contr.poly'))
   rownames <- rownames(contrasts(iv1))
   input_contrasts <- cbind(levels,weights)
   nlevels_iv1 <- nlevels(iv1)
