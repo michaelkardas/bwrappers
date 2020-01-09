@@ -3,7 +3,7 @@
 #' @description Performs planned contrasts for a one-way, between-subjects ANOVA. This
 #' function assumes categorical (i.e., unordered) independent variables, fixed effects,
 #' and equal variance across conditions. Note that the confidence interval and
-#' Cohen’s d use mean-square error to estimate variance.
+#' Cohen's d use mean-square error to estimate variance.
 #'
 #' @param dv1 Column vector containing the dependent variable
 #' @param iv1 Column vector containing the between-subjects independent variable
