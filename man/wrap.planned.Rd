@@ -18,7 +18,8 @@ wrap.planned(dv1, iv1, levels, weights)
 \description{
 Performs planned contrasts for a one-way, between-subjects ANOVA. This
 function assumes categorical (i.e., unordered) independent variables, fixed effects,
-and equal variance across conditions.
+and equal variance across conditions. Note that the confidence interval and
+Cohen's d use mean-square error to estimate variance.
 }
 \examples{
 ## Contrast between two levels of the independent variable
