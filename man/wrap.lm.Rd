@@ -16,7 +16,7 @@ standardized coefficients}
 \description{
 Performs linear regression analyses. The function delegates
 the primary computations to \code{\link[stats]{lm}} and
-\code{\link[lm.beta]{lm.beta}}. In the output, R^2 is not adjusted.
+\code{\link[sjstats]{std_beta}}. In the output, R^2 is not adjusted.
 }
 \examples{
 ## Linear regression with unstandardized coefficients
@@ -26,5 +26,5 @@ wrap.lm(model = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = FALSE)
 wrap.lm(model = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
 }
 \seealso{
-\code{\link[stats]{lm}}, \code{\link[lm.beta]{lm.beta}}
+\code{\link[stats]{lm}}, \code{\link[sjstats]{std_beta}}
 }

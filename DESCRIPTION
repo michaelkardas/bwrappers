@@ -20,9 +20,9 @@ Imports:
     gsubfn,
     Hmisc,
     lawstat,
-    lm.beta,
     psychometric,
     scales,
+    sjstats,
     stats,
     stringr,
     tidyr
