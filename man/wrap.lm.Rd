@@ -4,10 +4,10 @@
 \alias{wrap.lm}
 \title{Linear regression}
 \usage{
-wrap.lm(model, standardized = FALSE)
+wrap.lm(formula, standardized = FALSE)
 }
 \arguments{
-\item{model}{The linear model}
+\item{formula}{The linear model}
 
 \item{standardized}{A logical argument: if \code{FALSE}, the function
 returns unstandardized coefficients; if \code{TRUE}, the function returns
@@ -20,10 +20,10 @@ the primary computations to \code{\link[stats]{lm}} and
 }
 \examples{
 ## Linear regression with unstandardized coefficients
-wrap.lm(model = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = FALSE)
+wrap.lm(formula = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = FALSE)
 
 # Linear regression with standardized coefficients
-wrap.lm(model = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
+wrap.lm(formula = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
 }
 \seealso{
 \code{\link[stats]{lm}}, \code{\link[sjstats]{std_beta}}
