@@ -45,6 +45,9 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
   for (i in 1:ncol(as.data.frame(dv1))) {
     if(is.numeric(as.data.frame(dv1)[,i])==F) {return("Error: Must enter numeric columns for the dv1 parameter.")}
   }
+  if(is.null(iv1)==T&(is.null(iv2)==F|is.null(iv3)==F)) {return("Error: Must input iv1 before inputting either iv2 or iv3.")}
+  if(is.null(iv2)==T&is.null(iv3)==F) {return("Error: Must input iv2 before inputting iv3.")}
+  if(ncol(as.data.frame(dv1))==1&is.null(iv1)==T) {return("Error: Must enter between-subjects factors or multiple within-subjects DVs.")}
   if((is.data.frame(iv1)==T)|(is.data.frame(iv2)==T)|(is.data.frame(iv3)==T)) {
     return("Error: Must enter column vectors, rather than data frames, for the independent variables.")
   }
