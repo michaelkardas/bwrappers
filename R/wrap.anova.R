@@ -92,7 +92,8 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
   if(is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==T) {df_temp <- as.data.frame(cbind(dv1,iv1,iv2)); colnames(df_temp)[(ncol(df_temp)-1):ncol(df_temp)] <- c(colname1,colname2)}
   if(is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {df_temp <- as.data.frame(cbind(dv1,iv1,iv2,iv3)); colnames(df_temp)[(ncol(df_temp)-2):ncol(df_temp)] <- c(colname1,colname2,colname3)}
 
-  print(paste("ASSUMPTIONS: This function assumes categorical (i.e., unordered) independent variables and fixed effects, and does not apply sphericity corrections. You are currently using type ",type," sums of squares.",sep=""))
+  print(paste("ASSUMPTIONS: This function assumes categorical (i.e., unordered) independent variables and fixed effects, and does not apply sphericity corrections.",sep=""))
+  print(paste("Note: You are currently using type ",type," sums of squares.",sep=""))
   if(is.data.frame(dv1)==F) {
 
     # 3-way between-subjects ANOVA
