@@ -41,9 +41,9 @@ wrap.t.ind(dv1 = bdata$DV5, iv1 = bdata$IV1)
 wrap.t.pair(dv1 = bdata$DV3_T1, dv2 = bdata$DV3_T2)
 
 # ANOVA (Main Effects & Interaction Effects)
-wrap.anova(dv1 = bdata[c(6, 8)])
-wrap.anova(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2)
-wrap.anova(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV2)
+wrap.anova(dv1 = bdata[c(6, 8)]) # 1 within-subjects factor
+wrap.anova(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2) # 2 between-subjects factors
+wrap.anova(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV2) # 1 within-subjects factor; 2 between-subjects factors
 
 # ANOVA (Planned Contrasts)
 wrap.planned(dv1 = bdata$DV5, iv1 = bdata$IV2, levels = c("PhotoA", "PhotoB"), weights = c(-1, 1))
@@ -60,17 +60,17 @@ wrap.lm(model = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
 wrap.cor(dv1 = bdata$DV3_T1, dv2 = bdata$DV3_T2)
 
 # Chi-Square Tests
-wrap.chi(dv1 = bdata$DV2)
-wrap.chi(dv1 = bdata$DV2, iv1 = bdata$IV2)
+wrap.chi(dv1 = bdata$DV2) # One-way goodness-of-fit test
+wrap.chi(dv1 = bdata$DV2, iv1 = bdata$IV2) # Two-way contingency test
 
 ### Functions For Data Visualization ###
 # Bar Plots
-wrap.bar(dv1 = bdata[c(6, 8)])
-wrap.bar(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2)
-wrap.bar(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV3)
+wrap.bar(dv1 = bdata[c(6, 8)]) # 1 within-subjects factor
+wrap.bar(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2) # 2 between-subjects factors
+wrap.bar(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV3) # 1 within-subjects factor; 2 between-subjects factors
 
 # Line Plots
-wrap.line(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV2)
+wrap.line(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV2) # 1 within-subjects factor; 2 between-subjects factors
 
 # Histograms
 wrap.hist(dv1 = bdata$DV1, likert = FALSE)
