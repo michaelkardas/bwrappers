@@ -26,11 +26,11 @@ wrap.simple <- function(dv1,iv1,iv2,adjustment="none") {
   options(contrasts = c('contr.sum','contr.poly'))
 
   if (!requireNamespace("phia", quietly = TRUE)) {
-    stop("This function requires first installing the \"phia\" package. Please install this package. (To ensure that the bwrappers package would remain compatible with older versions of R, the package did not attempt to download \"phia\" during the initial installation from GitHub.",
+    stop("This function requires first installing the phia package. Please install this package. (To ensure that the bwrappers package would remain compatible with older versions of R, the package did not attempt to download phia during the initial installation from GitHub.",
          call. = FALSE)
   }
   if (!requireNamespace("car", quietly = TRUE)) {
-    stop("This function requires first installing the \"car\" package. Please install this package. (To ensure that the bwrappers package would remain compatible with older versions of R, the package did not attempt to download \"car\" during the initial installation from GitHub.",
+    stop("This function requires first installing the car package. Please install this package. (To ensure that the bwrappers package would remain compatible with older versions of R, the package did not attempt to download car during the initial installation from GitHub.",
          call. = FALSE)
   }
 
@@ -72,7 +72,7 @@ wrap.simple <- function(dv1,iv1,iv2,adjustment="none") {
     hp2.list[[i]] <- interaction["Sum of Sq"][[1]][i]/(interaction["Sum of Sq"][[1]][i]+interaction["Sum of Sq"][[1]][levels_iv2+1])
   }
 
-  print("ASSUMPTIONS: The function assumes categorical (i.e., unordered) independent variables and fixed effects.")
+  print("ASSUMPTIONS: The function assumes categorical (i.e., unordered) independent variables and fixed effects. In the output, hp2 denotes partial eta squared.")
   clip <- ""
   for (i in 1:levels_iv2) {
     clip <- paste(clip,"# ",rownames(interaction)[i],": ","F(",interaction$Df[i],", ",interaction$Df[levels_iv2+1],") = ",wrap.rd0(interaction$F[i],2),", p",if(as.numeric(interaction$'Pr(>F)'[i]) < .001) {" < .001"},if(as.numeric(interaction$'Pr(>F)'[i]) >= .001) {" = "},if (as.numeric(interaction$'Pr(>F)'[i]) >= .001) {wrap.rd((interaction$'Pr(>F)'[i]),3)},", hp2 = ",wrap.rd(hp2.list[[i]],2),"\n",sep="")
