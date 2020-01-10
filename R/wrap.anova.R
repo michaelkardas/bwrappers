@@ -48,7 +48,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
   if((is.data.frame(iv1)==T)|(is.data.frame(iv2)==T)|(is.data.frame(iv3)==T)) {
     return("Error: Must enter column vectors, rather than data frames, for the independent variables.")
   }
-  if(type!=1&type!=2&type!=3) {return("Error: Argument \"type\" must be equal to 1, 2, or 3.")}
+  if(type!=1&type!=2&type!=3) {return("Error: Argument type must be equal to 1, 2, or 3.")}
   if(is.null(iv1)==F) {if(is.factor(iv1)==F) {return("Error: Must input a factor variable for iv1.")}}
   if(is.null(iv2)==F) {if(is.factor(iv2)==F) {return("Error: Must input a factor variable for iv2.")}}
   if(is.null(iv3)==F) {if(is.factor(iv3)==F) {return("Error: Must input a factor variable for iv3.")}}

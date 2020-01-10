@@ -13,7 +13,7 @@
 #' @export
 wrap.rd <- function(num,places=2) {
   if(places<0 | places%%1!=0) {
-    return("\"places\" must be an integer greater than or equal to zero.")
+    return("Argument places must be an integer greater than or equal to zero.")
   }
 
   if(round(abs(num),places)<10^(-places)) {

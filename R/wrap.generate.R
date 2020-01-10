@@ -25,7 +25,7 @@ wrap.generate <- function(df,string1,string2,operation, newString = operation) {
   if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return("Error: Cannot find argument df in the Global Environment.")}
   if(is.null(string1)==T|is.null(string2)==T) {return("Error: Must enter character strings for parameters string1 and string2")}
   if(is.character(string1)==F|is.character(string2)==F) {return("Error: Must enter character strings for parameters string1 and string2")}
-  if(operation!="difference"&operation!="sum"&operation!="mean") {return("Error: operation must be set equal to \"difference\", \"sum\", or \"mean\".")}
+  if(operation!="difference"&operation!="sum"&operation!="mean") {return("Error: operation must be set equal to difference, sum, or mean.")}
   if(length(string1)>1|length(string2)>1) {return("Error: Parameters string1 and string2 must have one element each.")}
   if(string1==string2) {return("Error: You entered the same character strings for arguments string1 and string2.")}
   if(string1==newString|string2==newString) {return("Error: newString must be distinct from both string1 and string2.")}
