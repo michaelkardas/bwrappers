@@ -545,5 +545,6 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,reposition=NULL,
   }
   rownames(summary2) <- NULL
   print(summary2)
+  print("Note: Error bars are +/-1 SE.")
   return(plot)
 }
