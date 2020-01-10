@@ -53,8 +53,8 @@ wrap.planned(dv1 = bdata$DV5, iv1 = bdata$IV2, levels = c("PhotoA", "PhotoB", "P
 wrap.simple(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2)
 
 # Linear Regression
-wrap.lm(model = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = FALSE)
-wrap.lm(model = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
+wrap.lm(formula = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = FALSE)
+wrap.lm(formula = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
 
 # Correlation Tests
 wrap.cor(dv1 = bdata$DV3_T1, dv2 = bdata$DV3_T2)
