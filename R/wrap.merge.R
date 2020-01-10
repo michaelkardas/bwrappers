@@ -19,12 +19,14 @@ wrap.merge <- function(df) {
   if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return("Error: Cannot find argument df in the Global Environment.")}
   df_name <- toString(as.list(match.call(expand.dots = TRUE))[2][[1]])
   identical <- matrix(0,nrow=ncol(df),ncol=ncol(df))
+  columnnames <- NULL
 
   # locate sets of identical column names
   for (i in 1:ncol(df)) {
     for (j in i:ncol(df)) {
       if ((colnames(df)[i]==colnames(df)[j])&(i!=j)) {
         identical[i,j] <- 1
+        columnnames <- c(columnnames,colnames(df)[i])
       }
     }
   }
@@ -44,7 +46,7 @@ wrap.merge <- function(df) {
       for (j in i:ncol(identical)) {
         if (identical[i,j]==1) {
           for (k in 1:nrow(df)) {
-            if((is.na(df[k,i])==F&is.null(df[k,i])==F&df[k,i]!="")&(is.na(df[k,j])==F&is.null(df[k,j])==F&df[k,j]!="")) {return(paste("Error: Row ",k," contains values in multiple \"",colnames(df)[i],"\" columns.",sep=""))}
+            if((is.na(df[k,i])==F&is.null(df[k,i])==F&df[k,i]!="")&(is.na(df[k,j])==F&is.null(df[k,j])==F&df[k,j]!="")) {return(paste("Error: Row ",k," contains values in multiple ",colnames(df)[i]," columns.",sep=""))}
           }
         }
       }
@@ -80,4 +82,11 @@ wrap.merge <- function(df) {
 
   # assign the updated data frame to the Global environment
   assign(df_name,df,.GlobalEnv)
+  columnnames <- unique(columnnames)
+  if(length(columnnames)>0) {
+    print(paste("Merged ",length(columnnames)," group/s of columns: ",paste(columnnames,collapse=", "),".",sep=""))
+  }
+  if(length(columnnames)==0) {
+    print("Note: Did not find multiple columns with identical names.")
+  }
 }

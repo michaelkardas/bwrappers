@@ -19,6 +19,18 @@
 #' @export
 wrap.split <- function(df, iv1, iv2 = NULL, iv3 = NULL) {
 
+  if(is.null(substitute(iv2))==T) {
+    colnames <- c((substitute(iv1)))
+  }
+  
+  if(is.null(substitute(iv2))==F&is.null(substitute(iv3))==T) {
+    colnames <- c((substitute(iv1)),(substitute(iv2)))
+  }
+  
+  if(is.null(substitute(iv2))==F&is.null(substitute(iv3))==F) {
+    colnames <- c((substitute(iv1)),(substitute(iv2)),(substitute(iv3)))
+  }
+  
   if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return("Error: Cannot find argument df in the Global Environment.")}
   if(is.null(substitute(iv1))==F) {if(is.character(substitute(iv1))) {iv1 <- noquote(iv1)}}
   if(is.null(substitute(iv2))==F) {if(is.character(substitute(iv2))) {iv2 <- noquote(iv2)}}
@@ -61,7 +73,7 @@ wrap.split <- function(df, iv1, iv2 = NULL, iv3 = NULL) {
   if(is.null(substitute(iv3))==F) {
     if(any(is.na(df[[substitute(iv3)]]))) {print(paste("Note: Column ",substitute(iv3)," is missing values in one or more rows. These rows will not be included in data frames that split by ",substitute(iv3),".",sep=""))}
   }
-
+  
   # split by iv1
   try(A <- split(df, factor(eval(parse(text=paste(substitute(df),"$",substitute(iv1),sep=""))))), silent=T)
   names(A) <- paste0(substitute(df),".", names(A))
@@ -142,4 +154,5 @@ wrap.split <- function(df, iv1, iv2 = NULL, iv3 = NULL) {
       list2env(G, envir=.GlobalEnv)
     }
   }
+  print(paste("Note: Split ",substitute(df)," across all combinations of ",paste(colnames,collapse=", "),".",sep=""))
 }
