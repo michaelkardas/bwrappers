@@ -58,6 +58,10 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,reposition=NULL,
   if(is.data.frame(dv1)==T) {if(ncol(dv1)==1) {dv1 <- as.numeric(unlist(dv1))}}
 
   # Error checks
+  if(is.null(dv1)) {return(paste("Cannot find the column vector inputted to parameter dv1."))}
+  if(is.null(substitute(iv1))==F) {if(is.null(iv1)) {return(paste("Cannot find the column vector inputted to parameter iv1."))}}
+  if(is.null(substitute(iv2))==F) {if(is.null(iv2)) {return(paste("Cannot find the column vector inputted to parameter iv2."))}}
+  if(is.null(substitute(iv3))==F) {if(is.null(iv3)) {return(paste("Cannot find the column vector inputted to parameter iv3."))}}
   if(is.null(iv1)==T&is.null(iv2)==F) {return("Error: Must input iv1 before entering iv2")}
   if(is.null(iv2)==T&is.null(iv3)==F) {return("Error: Must input iv2 before entering iv3")}
   if(is.null(iv1)==T&is.null(iv3)==F) {return("Error: Must input iv1 before entering iv3")}

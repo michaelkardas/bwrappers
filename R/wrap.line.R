@@ -51,6 +51,9 @@ wrap.line <- function(dv1,iv1=NULL,iv2=NULL,reposition=NULL,rename1=NULL,
                       size.title=24,size.panel.title = 12,size.legend.text=14) {
 
   # Error checks
+  if(is.null(dv1)) {return(paste("Cannot find the column vector inputted to parameter dv1."))}
+  if(is.null(substitute(iv1))==F) {if(is.null(iv1)) {return(paste("Cannot find the column vector inputted to parameter iv1."))}}
+  if(is.null(substitute(iv2))==F) {if(is.null(iv2)) {return(paste("Cannot find the column vector inputted to parameter iv2."))}}
   if(is.null(iv1)==T&is.null(iv2)==F) {return("Enter iv1 before entering iv2")}
   if(is.null(iv1)==F) {if(is.data.frame(iv1)) {if(ncol(iv1)>1) {return("Error: Must input one column maximum for iv1.")}}}
   if(is.null(iv2)==F) {if(is.data.frame(iv2)) {if(ncol(iv2)>1) {return("Error: Must input one column maximum for iv2.")}}}

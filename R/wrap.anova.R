@@ -33,9 +33,9 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
   x <- options('contrasts') # store original contrasts
   options(contrasts = c('contr.sum','contr.poly'))
   dv1_name <- deparse(substitute(dv1))
-  sub1 <- NULL; if(is.null(iv1)==F) {sub1 <- substitute(iv1); iv1_name <- deparse(substitute(iv1)); colname1 <- substring(iv1_name,str_locate_all(pattern=coll('$'),iv1_name)[[1]][1]+1)}
-  sub2 <- NULL; if(is.null(iv2)==F) {sub2 <- substitute(iv2); iv2_name <- deparse(substitute(iv2)); colname2 <- substring(iv2_name,str_locate_all(pattern=coll('$'),iv2_name)[[1]][1]+1)}
-  sub3 <- NULL; if(is.null(iv3)==F) {sub3 <- substitute(iv3); iv3_name <- deparse(substitute(iv3)); colname3 <- substring(iv3_name,str_locate_all(pattern=coll('$'),iv3_name)[[1]][1]+1)}
+  sub1 <- NULL; if(is.null(substitute(iv1))==F) {sub1 <- substitute(iv1); iv1_name <- deparse(substitute(iv1)); colname1 <- substring(iv1_name,str_locate_all(pattern=coll('$'),iv1_name)[[1]][1]+1)}
+  sub2 <- NULL; if(is.null(substitute(iv2))==F) {sub2 <- substitute(iv2); iv2_name <- deparse(substitute(iv2)); colname2 <- substring(iv2_name,str_locate_all(pattern=coll('$'),iv2_name)[[1]][1]+1)}
+  sub3 <- NULL; if(is.null(substitute(iv3))==F) {sub3 <- substitute(iv3); iv3_name <- deparse(substitute(iv3)); colname3 <- substring(iv3_name,str_locate_all(pattern=coll('$'),iv3_name)[[1]][1]+1)}
 
   # Error checks
   if(is.null(dv1)) {return(paste("Cannot find the column vector inputted to parameter dv1."))}
