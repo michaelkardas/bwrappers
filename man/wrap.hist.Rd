@@ -41,7 +41,7 @@ along the y axis; if \code{FALSE}, the plot displays counts}
 
 \item{ylim}{Numeric vector containing y-axis limits}
 
-\item{ymajor}{Numeric argument representing spacing of y-axis limits}
+\item{ymajor}{Numeric argument representing spacing of y-axis tick marks}
 
 \item{ylab}{Character string containing the y-axis label}
 

@@ -56,7 +56,7 @@ before applying the \code{reorder} arguments.)}
 
 \item{ylim}{Numeric vector containing lower and upper y-axis limits}
 
-\item{ymajor}{Numeric argument representing spacing of y-axis gridlines}
+\item{ymajor}{Numeric argument representing spacing of y-axis tick marks}
 
 \item{ylab}{Character string containing the y-axis label}
 
