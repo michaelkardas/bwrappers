@@ -65,12 +65,12 @@ wrap.chi(dv1 = bdata$DV2, iv1 = bdata$IV2) # Two-way contingency test
 
 ### Functions For Data Visualization ###
 # Bar Plots
-wrap.bar(dv1 = bdata[c(6, 8)]) # 1 within-subjects factor
-wrap.bar(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2) # 2 between-subjects factors
-wrap.bar(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV3) # 1 within-subjects factor; 2 between-subjects factors
+wrap.bar(dv1 = bdata[c(10:12)],ylim=c(0,10),ymajor=2) # 1 within-subjects factor
+wrap.bar(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2,ylim=c(0,10),ymajor=2) # 2 between-subjects factors
+wrap.bar(dv1 = bdata[c(10:12)], iv1 = bdata$IV1, iv2 = bdata$IV3,ylim=c(0,10),ymajor=2) # 1 within-subjects factor; 2 between-subjects factors
 
 # Line Plots
-wrap.line(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV2) # 1 within-subjects factor; 2 between-subjects factors
+wrap.line(dv1 = bdata[c(6,8)], iv1 = bdata$IV1, iv2 = bdata$IV2,ylim=c(0,10),ymajor=2) # 1 within-subjects factor; 2 between-subjects factors
 
 # Histograms
 wrap.hist(dv1 = bdata$DV1, likert = FALSE)
