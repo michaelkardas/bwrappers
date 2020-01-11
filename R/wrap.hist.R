@@ -52,6 +52,7 @@ wrap.hist <- function(dv1,likert=F,percent=T,binwidth=1,ylim=NULL,
   if(is.null(title)==T & grepl("\\[",toString(substitute(dv1)))==T) {df_temp <- get(substr(deparse(substitute(dv1)),1,which(strsplit(deparse(substitute(dv1)), "")[[1]]=="[")-1),envir = .GlobalEnv); title <- names(df_temp)[substitute(dv1)[[3]]]}
   if(any(is.na(dv1))) {print("Note: Your inputs include one or more NA entries. The function will ignore the rows containing these entries.")}
   dv1 <- dv1[!is.na(dv1)]
+  if(all(dv1%%1==0)==F&likert==T) {warning("Note: You specified likert=T but one or more responses on the dependent measure are non-integers.")}
   df <- data.frame(dv1)
   if(is.null(binwidth)==F&is.null(xmajor)==T) {xmajor <- binwidth}
 
