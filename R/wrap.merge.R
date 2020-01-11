@@ -5,7 +5,7 @@
 #' that is not blank or \code{NA}. The function outputs the revised data frame directly
 #' to the Global Environment.
 #'
-#' @param df The data frame that the function should search for iddentical column
+#' @param df The data frame that the function should search for identical column
 #' names
 #'
 #' @examples
