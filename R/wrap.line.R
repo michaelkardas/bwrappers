@@ -8,6 +8,13 @@
 #'
 #' @param dv1 Multiple column vectors containing the within-subjects dependent variables
 #' @param iv1,iv2 Column vectors containing the independent variables
+#' @param ylim Numeric vector containing lower and upper y-axis limits
+#' @param ymajor Numeric argument representing spacing of y-axis tick marks
+#' @param ylab Character string containing the y-axis label
+#' @param xlab Character string containing the x-axis label
+#' @param title Character string containing the plot title
+#' @param size.axis.text.y,size.axis.text.x,size.title,size.panel.title,size.legend.text Numeric
+#' arguments containing font sizes
 #' @param reposition Numeric vector to rearrange columns in the summary table and
 #' thus reposition factors within the plot itself. For example, \code{reposition = c(1, 3, 2)}
 #' reverses the order of the second and third columns in the summary table and
@@ -25,30 +32,23 @@
 #' summary table and reorders the corresponding factor levels within the plot. (Note that
 #' the function applies the \code{reposition} and \code{rename} arguments to the summary table
 #' before applying the \code{reorder} arguments.)
-#' @param ylim Numeric vector containing lower and upper y-axis limits
-#' @param ymajor Numeric argument representing spacing of y-axis tick marks
-#' @param ylab Character string containing the y-axis label
-#' @param xlab Character string containing the x-axis label
-#' @param title Character string containing the plot title
-#' @param size.axis.text.y,size.axis.text.x,size.title,size.panel.title,size.legend.text Numeric
-#' arguments containing font sizes
 #'
 #' @seealso \code{\link[ggplot2]{ggplot}}
 #'
 #' @examples
 #' ## Line plot with 1 within-subjects factor
-#' wrap.line(dv1 = bdata[c(6, 8)])
+#' wrap.line(dv1 = bdata[c(6, 8)], ylim=c(0, 10), ymajor=2)
 #'
 #' ## Line plot with 1 within-subjects factor & 2 between-subjects factors
-#' wrap.line(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV2)
+#' wrap.line(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV2, ylim=c(0, 10), ymajor=2)
 #'
 #' @import ggplot2 stringr ggsignif
 #' @export
-wrap.line <- function(dv1,iv1=NULL,iv2=NULL,reposition=NULL,rename1=NULL,
-                      rename2=NULL,rename3=NULL,reorder1=NULL,reorder2=NULL,
-                      reorder3=NULL,ylim=NULL,ymajor=NULL,ylab=NULL,xlab=NULL,
-                      title=NULL,size.axis.text.y = 12,size.axis.text.x=16,
-                      size.title=24,size.panel.title = 12,size.legend.text=14) {
+wrap.line <- function(dv1,iv1=NULL,iv2=NULL,ylim=NULL,ymajor=NULL,ylab=NULL,
+                      xlab=NULL,title=NULL,size.axis.text.y = 12,size.axis.text.x=16,
+                      size.title=24,size.panel.title = 12,size.legend.text=14,
+                      reposition=NULL,rename1=NULL,rename2=NULL,rename3=NULL,
+                      reorder1=NULL,reorder2=NULL,reorder3=NULL) {
 
   # Error checks
   if(is.null(dv1)) {return(paste("Cannot find the column vector inputted to parameter dv1."))}
@@ -59,7 +59,7 @@ wrap.line <- function(dv1,iv1=NULL,iv2=NULL,reposition=NULL,rename1=NULL,
   if(is.null(iv2)==F) {if(is.data.frame(iv2)) {if(ncol(iv2)>1) {return("Error: Must input one column maximum for iv2.")}}}
   if(is.data.frame(dv1)==F) {return("To plot a line graph, you must enter multiple columns for parameter dv1.")}
   if(is.data.frame(dv1)==T) {if(ncol(dv1)==1) {return("To plot a line graph, you must enter multiple columns for parameter dv1.")}}
-  if(is.null(ylim)==F) {if(length(ylim)!=2) {return("Error: ylim must have two elements (e.g., ylim = c(0,10)).")}}
+  if(is.null(ylim)==F) {if(length(ylim)!=2) {return("Error: ylim must have two elements (e.g., ylim = c(0,10)). (If you tried entering three between-subjects independent variables, note that this function can plot up to 2 between-subjects independent variables maximum.)")}}
   if(is.null(ylim)==T&is.null(ymajor)==F) {return("Must input argument ylim (y-axis limits) to specify ymajor (spacing of y-axis tick marks).")}
   for (i in 1:ncol(dv1)) {
     if(class(dv1[[i]])!="numeric") {
@@ -196,8 +196,7 @@ wrap.line <- function(dv1,iv1=NULL,iv2=NULL,reposition=NULL,rename1=NULL,
   if(is.null(iv2)==F) {total_levels <- total_levels+1}
   if(is.null(reposition)==F) {
     if(total_levels<2) {return("Error: Cannot reposition factors in graphs that display fewer than 2 factors.")}
-    if(length(reposition)!=total_levels) {return(paste("Error: The reposition vector should have length ",total_levels,". (If you tried entering three between-subjects independent variables, note that this function can plot maximum 1 within-subjects factor and 2 between-subjects factors.)",sep=""))}
-    if(any(sort(reposition)!=c(1:total_levels))) {return(paste("Error: The reposition parameter should contain the integers 1 through ",total_levels,", representing the within-subjects and/or between-subjects factors in the summary table.",sep=""))}
+    if(any(sort(reposition)!=c(1:total_levels))) {return(paste("Error: The reposition parameter should contain the integers 1 through ",total_levels,", representing the column numbers of the summary table.",sep=""))}
     summary[,1:total_levels] <- summary[,reposition]
   }
 

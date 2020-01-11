@@ -11,12 +11,12 @@
 #' @param percent A logical argument: if \code{TRUE}, the plot displays percentages
 #' along the y axis; if \code{FALSE}, the plot displays counts
 #' @param binwidth Numeric argument representing bin width
-#' @param xlim Numeric vector containing x-axis limits
-#' @param xmajor Numeric argument representing spacing of x-axis labels
-#' @param xlab Character string containing the x-axis label
 #' @param ylim Numeric vector containing y-axis limits
 #' @param ymajor Numeric argument representing spacing of y-axis tick marks
 #' @param ylab Character string containing the y-axis label
+#' @param xlim Numeric vector containing x-axis limits
+#' @param xmajor Numeric argument representing spacing of x-axis labels
+#' @param xlab Character string containing the x-axis label
 #' @param title Character string containing plot title
 #' @param size.axis.text.x,size.axis.text.y,size.title Numeric arguments
 #' containing font sizes
@@ -33,9 +33,9 @@
 #' @import stringr ggplot2
 #' @importFrom scales percent_format
 #' @export
-wrap.hist <- function(dv1,likert=F,percent=T,binwidth=1,xlim=NULL,
-                      xmajor=NULL,xlab=NULL,ylim=NULL,ymajor=NULL,
-                      ylab=NULL,title=NULL,size.axis.text.y = 12,
+wrap.hist <- function(dv1,likert=F,percent=T,binwidth=1,ylim=NULL,
+                      ymajor=NULL,ylab=NULL,xlim=NULL,xmajor=NULL,
+                      xlab=NULL,title=NULL,size.axis.text.y = 12,
                       size.axis.text.x=12,size.title=24) {
 
   # Error checks
