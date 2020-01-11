@@ -9,13 +9,6 @@ wrap.bar(
   iv1 = NULL,
   iv2 = NULL,
   iv3 = NULL,
-  reposition = NULL,
-  rename1 = NULL,
-  rename2 = NULL,
-  rename3 = NULL,
-  reorder1 = NULL,
-  reorder2 = NULL,
-  reorder3 = NULL,
   ylim = NULL,
   ymajor = NULL,
   ylab = NULL,
@@ -25,7 +18,14 @@ wrap.bar(
   size.axis.text.x = 16,
   size.title = 24,
   size.panel.title = 12,
-  size.legend.text = 14
+  size.legend.text = 14,
+  reposition = NULL,
+  rename1 = NULL,
+  rename2 = NULL,
+  rename3 = NULL,
+  reorder1 = NULL,
+  reorder2 = NULL,
+  reorder3 = NULL
 )
 }
 \arguments{
@@ -33,6 +33,19 @@ wrap.bar(
 multiple column vectors containing the within-subjects dependent variables}
 
 \item{iv1, iv2, iv3}{Column vectors containing the independent variables}
+
+\item{ylim}{Numeric vector containing lower and upper y-axis limits}
+
+\item{ymajor}{Numeric argument representing spacing of y-axis tick marks}
+
+\item{ylab}{Character string containing the y-axis label}
+
+\item{xlab}{Character string containing the x-axis label}
+
+\item{title}{Character string containing the plot title}
+
+\item{size.axis.text.y, size.axis.text.x, size.title, size.panel.title, size.legend.text}{Numeric
+arguments containing font sizes}
 
 \item{reposition}{Numeric vector to rearrange columns in the summary table and
 thus reposition factors within the plot itself. For example, \code{reposition = c(1, 3, 2)}
@@ -53,19 +66,6 @@ summary table and thus reorder factor levels within the plot itself. For example
 summary table and reorders the corresponding factor levels within the plot. (Note that
 the function applies the \code{reposition} and \code{rename} arguments to the summary table
 before applying the \code{reorder} arguments.)}
-
-\item{ylim}{Numeric vector containing lower and upper y-axis limits}
-
-\item{ymajor}{Numeric argument representing spacing of y-axis tick marks}
-
-\item{ylab}{Character string containing the y-axis label}
-
-\item{xlab}{Character string containing the x-axis label}
-
-\item{title}{Character string containing the plot title}
-
-\item{size.axis.text.y, size.axis.text.x, size.title, size.panel.title, size.legend.text}{Numeric
-arguments containing font sizes}
 }
 \description{
 Creates bar plots for numerical dependent variables, adds error bars,
@@ -76,13 +76,13 @@ Error bars are +/-1 SE.
 }
 \examples{
 ## Bar plot with 1 within-subjects factor
-wrap.bar(dv1 = bdata[c(6, 8)])
+wrap.bar(dv1 = bdata[c(10:12)], ylim=c(0, 10), ymajor=2)
 
 ## Bar plot with 2 between-subjects factors
-wrap.bar(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2)
+wrap.bar(dv1 = bdata$DV5, iv1 = bdata$IV1, iv2 = bdata$IV2, ylim=c(0, 10), ymajor=2)
 
 ## Bar plot with 1 within-subjects factor & 2 between-subjects factors
-wrap.bar(dv1 = bdata[c(6, 8)], iv1 = bdata$IV1, iv2 = bdata$IV3)
+wrap.bar(dv1 = bdata[c(10:12)], iv1 = bdata$IV1, iv2 = bdata$IV3, ylim=c(0, 10), ymajor=2)
 
 }
 \seealso{

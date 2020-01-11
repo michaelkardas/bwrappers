@@ -9,12 +9,12 @@ wrap.hist(
   likert = F,
   percent = T,
   binwidth = 1,
-  xlim = NULL,
-  xmajor = NULL,
-  xlab = NULL,
   ylim = NULL,
   ymajor = NULL,
   ylab = NULL,
+  xlim = NULL,
+  xmajor = NULL,
+  xlab = NULL,
   title = NULL,
   size.axis.text.y = 12,
   size.axis.text.x = 12,
@@ -33,17 +33,17 @@ along the y axis; if \code{FALSE}, the plot displays counts}
 
 \item{binwidth}{Numeric argument representing bin width}
 
-\item{xlim}{Numeric vector containing x-axis limits}
-
-\item{xmajor}{Numeric argument representing spacing of x-axis labels}
-
-\item{xlab}{Character string containing the x-axis label}
-
 \item{ylim}{Numeric vector containing y-axis limits}
 
 \item{ymajor}{Numeric argument representing spacing of y-axis tick marks}
 
 \item{ylab}{Character string containing the y-axis label}
+
+\item{xlim}{Numeric vector containing x-axis limits}
+
+\item{xmajor}{Numeric argument representing spacing of x-axis labels}
+
+\item{xlab}{Character string containing the x-axis label}
 
 \item{title}{Character string containing plot title}
 
