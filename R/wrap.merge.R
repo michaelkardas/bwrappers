@@ -16,7 +16,7 @@
 #' @export
 wrap.merge <- function(df) {
 
-  if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return("Error: Cannot find argument df in the Global Environment.")}
+  if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return(paste("Error: Cannot find ",substitute(df)," in the Global Environment.",sep=""))}
   df_name <- toString(as.list(match.call(expand.dots = TRUE))[2][[1]])
   identical <- matrix(0,nrow=ncol(df),ncol=ncol(df))
   columnnames <- NULL

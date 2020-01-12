@@ -22,7 +22,7 @@
 wrap.generate <- function(df,string1,string2,operation, newString = operation) {
 
   # Error checks
-  if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return("Error: Cannot find argument df in the Global Environment.")}
+  if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return(paste("Error: Cannot find ",substitute(df)," in the Global Environment.",sep=""))}
   if(is.null(string1)==T|is.null(string2)==T) {return("Error: Must enter character strings for parameters string1 and string2")}
   if(is.character(string1)==F|is.character(string2)==F) {return("Error: Must enter character strings for parameters string1 and string2")}
   if(operation!="difference"&operation!="sum"&operation!="mean") {return("Error: operation must be set equal to difference, sum, or mean.")}

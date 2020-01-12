@@ -31,7 +31,7 @@ wrap.split <- function(df, iv1, iv2 = NULL, iv3 = NULL) {
     colnames <- c((substitute(iv1)),(substitute(iv2)),(substitute(iv3)))
   }
   
-  if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return("Error: Cannot find argument df in the Global Environment.")}
+  if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return(paste("Error: Cannot find ",substitute(df)," in the Global Environment.",sep=""))}
   if(is.null(substitute(iv1))==F) {if(is.character(substitute(iv1))) {iv1 <- noquote(iv1)}}
   if(is.null(substitute(iv2))==F) {if(is.character(substitute(iv2))) {iv2 <- noquote(iv2)}}
   if(is.null(substitute(iv3))==F) {if(is.character(substitute(iv3))) {iv3 <- noquote(iv3)}}
