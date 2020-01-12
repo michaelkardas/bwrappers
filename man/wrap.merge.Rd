@@ -7,7 +7,7 @@
 wrap.merge(df)
 }
 \arguments{
-\item{df}{The data frame that the function should search for iddentical column
+\item{df}{The data frame that the function should search for identical column
 names}
 }
 \description{
