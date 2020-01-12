@@ -20,3 +20,4 @@ that will be called by other functions in this package.)
 wrap.rd(num = 0.0145, places = 3)
 
 }
+\keyword{internal}
