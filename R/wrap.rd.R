@@ -1,4 +1,4 @@
-#' Round a number
+#' Round a number (without leading zeros)
 #'
 #' @description Rounds a number, omits the leading zero, and retains at
 #' least one significant digit when possible. (This is a helper function
