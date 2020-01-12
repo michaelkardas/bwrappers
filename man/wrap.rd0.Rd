@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrap.rd0.R
 \name{wrap.rd0}
 \alias{wrap.rd0}
-\title{Round a number}
+\title{Round a number (with leading zeros)}
 \usage{
 wrap.rd0(num, places = 2)
 }

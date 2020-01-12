@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrap.rd.R
 \name{wrap.rd}
 \alias{wrap.rd}
-\title{Round a number}
+\title{Round a number (without leading zeros)}
 \usage{
 wrap.rd(num, places = 2)
 }
