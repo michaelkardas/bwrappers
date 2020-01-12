@@ -10,6 +10,7 @@
 #' @examples
 #' wrap.rd0(num = 0.0145, places = 3)
 #'
+#' @keyword internal
 #' @export
 wrap.rd0 <- function(num,places=2) {
   if(places<0 | places%%1!=0) {
