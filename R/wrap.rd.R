@@ -10,8 +10,8 @@
 #' @examples
 #' wrap.rd(num = 0.0145, places = 3)
 #'
-#' @keywords internal
 #' @export
+#' @keywords internal
 wrap.rd <- function(num,places=2) {
   if(places<0 | places%%1!=0) {
     return("Argument places must be an integer greater than or equal to zero.")
