@@ -8,12 +8,10 @@
 \description{
 This package contains wrappers and other functions for more
     efficiently cleaning, analyzing, and visualizing data in the behavioral
-    sciences. The functions do so by:
- \enumerate{
-  \item Tailoring syntax to the structure of a typical data sheet in the behavioral sciences
-  \item Automating intermediate steps such as splitting and reshaping data frames
-  \item Returning statistics in APA format and copying these outputs to the clipboard
- }
+    sciences. The functions tailor syntax to the structure of a typical data
+    frame in the behavioral sciences, automate intermediate steps such as
+    splitting and reshaping data frames, return statistics in APA
+    format, and copy these outputs directly to the clipboard.
 }
 \references{
 \url{https://github.com/michaelkardas/bwrappers}
