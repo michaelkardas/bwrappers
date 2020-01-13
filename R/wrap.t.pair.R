@@ -1,4 +1,4 @@
-#' Paired-samples t test
+#' T Test (Paired Samples)
 #'
 #' @description Performs paired-samples t tests. The function delegates the
 #' primary computations to \code{\link[stats]{t.test}}.

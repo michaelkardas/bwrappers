@@ -1,4 +1,4 @@
-#' One-sample t test
+#' T Test (One Sample)
 #'
 #' @description Performs one-sample t tests. The function delegates the primary
 #' operations to \code{\link[stats]{t.test}}.

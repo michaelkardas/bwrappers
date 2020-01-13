@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrap.t.ind.R
 \name{wrap.t.ind}
 \alias{wrap.t.ind}
-\title{Independent-samples t test}
+\title{T Test (Independent Samples)}
 \usage{
 wrap.t.ind(dv1, iv1, var.equal = T)
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrap.t.pair.R
 \name{wrap.t.pair}
 \alias{wrap.t.pair}
-\title{Paired-samples t test}
+\title{T Test (Paired Samples)}
 \usage{
 wrap.t.pair(dv1, dv2)
 }

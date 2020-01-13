@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrap.t.one.R
 \name{wrap.t.one}
 \alias{wrap.t.one}
-\title{One-sample t test}
+\title{T Test (One Sample)}
 \usage{
 wrap.t.one(dv1, mu = 0)
 }
