@@ -37,11 +37,11 @@ wrap.cor <- function(dv1, dv2) {
 
   if(a$p.value < .001) {
     write_clip(allow_non_interactive = TRUE, content = paste(" # ","r = ",wrap.rd(a$estimate,2),", t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CI = [",wrap.rd(b[1],2),", ",wrap.rd(b[2],2),"]",sep=""))
-    return(cat(" # ","r = ",wrap.rd(a$estimate,2),", t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CI = [",wrap.rd(b[1],2),", ",wrap.rd(b[2],2),"]",sep=""))
+    return(cat("# ","r = ",wrap.rd(a$estimate,2),", t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CI = [",wrap.rd(b[1],2),", ",wrap.rd(b[2],2),"]",sep=""))
   }
 
   else {
     write_clip(allow_non_interactive = TRUE, content = paste(" # ","r = ",wrap.rd(a$estimate,2),", t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CI = [",wrap.rd(b[1],2),", ",wrap.rd(b[2],2),"]",sep=""))
-    return(cat(" # ","r = ",wrap.rd(a$estimate,2),", t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CI = [",wrap.rd(b[1],2),", ",wrap.rd(b[2],2),"]",sep=""))
+    return(cat("# ","r = ",wrap.rd(a$estimate,2),", t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p = ",wrap.rd(a$p.value,3),", 95% CI = [",wrap.rd(b[1],2),", ",wrap.rd(b[2],2),"]",sep=""))
   }
 }

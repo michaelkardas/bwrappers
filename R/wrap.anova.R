@@ -263,12 +263,12 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
       data_frame$userAnovaIDNum <- NULL
 
       if (Anova$p[2]<.001) {
-        write_clip(allow_non_interactive = TRUE, content = paste(" # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p < .001",", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
+        write_clip(allow_non_interactive = TRUE, content = paste("# F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p < .001",", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
         return(cat("\n"," # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p < .001",", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
       }
 
       else {
-        write_clip(allow_non_interactive = TRUE, content = paste(" # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p = ",wrap.rd(Anova$p[2],3),", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
+        write_clip(allow_non_interactive = TRUE, content = paste("# F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p = ",wrap.rd(Anova$p[2],3),", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
         return(cat("\n"," # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p = ",wrap.rd(Anova$p[2],3),", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
       }
     }

@@ -58,8 +58,8 @@ wrap.chi <- function(dv1,iv1=NULL,p=rep(1/nlevels(factor(dv1)),nlevels(factor(dv
     eval(parse(text=string))
     b <- chisq.test(matrix[[2]],correct=correct)
     if(nrow(matrix[[2]])==2&ncol(matrix[[2]])==2) {
-      if(correct==F) {print(paste("Note that the function has NOT applied Yates's correction.",sep=""))}
-      if(correct==T) {print(paste("Note that the function HAS applied Yates's correction.",sep=""))}
+      if(correct==F) {print("Note that the function has NOT applied Yates's correction.")}
+      if(correct==T) {print("Note that the function HAS applied Yates's correction.")}
     }
   }
 
