@@ -51,7 +51,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
   # Parsing the dependent variable by 0 IVs
   if(is.null(iv1)==T & is.null(iv2)==T) {
 
-    # ordinal dependent measures
+    # numerical dependent measures
     if(class(dv1)=="numeric"|class(dv1)=="integer") {
       a <- mean(dv1,na.rm=T)
       b <- sd(dv1,na.rm=T)
@@ -59,7 +59,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
       d <- a-qt(c(.025,.975),sum(!is.na(dv1))-1)[2]*c
       e <- a+qt(c(.025,.975),sum(!is.na(dv1))-1)[2]*c
       write_clip(allow_non_interactive = TRUE, content = paste("# N = ",sum(!is.na(dv1)),": M = ",wrap.rd0(a,2),", SD = ",wrap.rd0(b,2),", Var = ",wrap.rd0(b^2,2),", SE = ",wrap.rd0(c,2),", 95% CI = [",wrap.rd0(d),", ",wrap.rd0(e),"]",sep=""))
-      return(cat("\n","# N = ",sum(!is.na(dv1)),": M = ",wrap.rd0(a,2),", SD = ",wrap.rd0(b,2),", Var = ",wrap.rd0(b^2,2),", SE = ",wrap.rd0(c,2),", 95% CI = [",wrap.rd0(d),", ",wrap.rd0(e),"]",sep=""))
+      return(cat("# N = ",sum(!is.na(dv1)),": M = ",wrap.rd0(a,2),", SD = ",wrap.rd0(b,2),", Var = ",wrap.rd0(b^2,2),", SE = ",wrap.rd0(c,2),", 95% CI = [",wrap.rd0(d),", ",wrap.rd0(e),"]",sep=""))
     }
     # categorical dependent measures
     else if(class(dv1)=="factor"|class(dv1)=="character") {
@@ -101,7 +101,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
   # Parsing the dependent variable by 1 IV
   else if (is.null(iv1)==F & is.null(iv2)==T) {
 
-    # ordinal dependent measures
+    # numerical dependent measures
     if(class(dv1)=="numeric"|class(dv1)=="integer") {
       a <- tapply(as.numeric(dv1[is.na(dv1)==F&is.na(iv1)==F&is.na(dv1)==F]),factor(iv1[is.na(dv1)==F&is.na(iv1)==F&is.na(dv1)==F]),length) # compute number of measurements per level of your iv1
       b <- tapply(as.numeric(dv1),factor(iv1),mean,na.rm=T) # compute mean dv1 at each level of your iv1
@@ -128,7 +128,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
       if(substr(clip,1,1)=="\n") {clip <- substr(clip,2,nchar(clip))}
       write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
-      e <- "\n"
+      e <- NULL
       return(for (j in 1:i) {
         e <- cat(e,string[j],"\n")
       })
@@ -204,7 +204,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
     iv1 <- factor(iv1)
     iv2 <- factor(iv2)
 
-    # ordinal dependent measures
+    # numerical dependent measures
 
     if (class(dv1)=="numeric"|class(dv1)=="integer") {
 
@@ -273,8 +273,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
       write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       string <- ""
-      return(for (i in 1:nlevels_iv2) {
-        if(i==1) {string <- cat("\n",string)}
+      for (i in 1:nlevels_iv2) {
         string <- cat(string,"## ",levels(iv2)[i],"\n",sep="")
         for (j in 1:nlevels_iv1) {
           string <- cat(string,"# ",levels(iv1)[j]," (N = ",a[i,j],"): M = ",b[i,j],", SD = ",c[i,j],", Var = ",g[i,j],", SE = ",d[i,j],", 95% CI = [",e[i,j],", ",f[i,j],"]","\n",sep="")
@@ -282,7 +281,8 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
         if (i < (nlevels_iv2)) {
           string <- cat(string,"\n",sep="")
         }
-      })
+      }
+      return(cat(string))
     }
 
     # categorical dependent measures
@@ -335,7 +335,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
       write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       string <- ""
-      return(for (i in 1:nlevels_iv1) {
+      for (i in 1:nlevels_iv1) {
         string <- cat(string,"## ",levels(iv1)[i],"\n",sep="")
         for (j in 1:nlevels_iv2) {
           string <- cat(string,"# ",levels(iv2)[j]," (N = ",a[i,j],"): ",sep="")
@@ -350,7 +350,8 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
         if (i < nlevels_iv1) {
           string <- cat(string,"\n",sep="")
         }
-      })
+      }
+      return(cat(string))
     }
   }
 }
