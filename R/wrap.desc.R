@@ -124,7 +124,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
         clip <- paste(clip,string[j],"\n",sep="")
       }
 
-      clip <- paste(substr(clip,1,nchar(clip)-2),sep="")
+      clip <- paste(substr(clip,1,nchar(clip)-1),sep="")
       if(substr(clip,1,1)=="\n") {clip <- substr(clip,2,nchar(clip))}
       write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
