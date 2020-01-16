@@ -9,6 +9,9 @@
 #' @param dv1 Column vector containing the between-subjects dependent variable OR
 #' multiple column vectors containing the within-subjects dependent variables
 #' @param iv1,iv2,iv3 Column vectors containing the independent variables
+#' @param errorbar Character string specifying the length of the error bars:
+#' \code{"se"} displays +/-1 standard error; \code{"ci"} displays 95\% confidence intervals
+#' without p-value adjustment
 #' @param ylim Numeric vector containing lower and upper y-axis limits
 #' @param ymajor Numeric argument representing spacing of y-axis tick marks
 #' @param ylab Character string containing the y-axis label
@@ -48,8 +51,8 @@
 #'
 #' @import ggplot2 stringr ggsignif
 #' @export
-wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
-                     ylab=NULL,xlab=NULL,title=NULL,size.axis.text.y = 12,
+wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
+                     ymajor=NULL,ylab=NULL,xlab=NULL,title=NULL,size.axis.text.y = 12,
                      size.axis.text.x=16,size.title=24,size.panel.title = 12,
                      size.legend.text=14,reposition=NULL,rename1=NULL,
                      rename2=NULL,rename3=NULL,reorder1=NULL,reorder2=NULL,
@@ -74,6 +77,8 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
   if(is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {return("Error: You inputted 1 within-subjects factor and 3 between-subjects factors. Must input 3 factors maximum.")}
   if(is.null(ylim)==F) {if(length(ylim)!=2) {return("Error: ylim must have two elements (e.g., ylim = c(0,10)).")}}
   if(is.null(ylim)==T&is.null(ymajor)==F) {return("Error: Must input argument ylim (y-axis limits) to specify ymajor (spacing of y-axis tick marks).")}
+  if(is.null(errorbar)) {return("Error: Parameter errorbar must equal se or ci.")}
+  if(errorbar!="se"&errorbar!="ci") {return("Error: Parameter errorbar must equal se or ci.")}
   
   # Formatting
   if(is.null(title)==T & grepl("\\$",toString(substitute(dv1)))==T& is.data.frame(dv1)==F) {title <- toString(substring(deparse(substitute(as.numeric(dv1))),str_locate_all(pattern=coll('$'),deparse(substitute(as.numeric(dv1))))[[1]][1]+1,nchar(deparse(substitute(as.numeric(dv1))))-1))}
@@ -139,11 +144,12 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
 
     # One DV, no between-subjects IVs
     if (is.null(iv1)==T) {
-      summary <- data.frame(matrix(0,nrow=1,ncol=3))
-      colnames(summary) <- c("dv1","M","SE")
+      summary <- data.frame(matrix(0,nrow=1,ncol=4))
+      colnames(summary) <- c("dv1","M","SE","N")
       summary[1,1] <- substr(dv1_,1,nchar(dv1_)-1)
       summary[1,2] <- mean(df,na.rm=T)
       summary[1,3] <- sd(df,na.rm=T)/sqrt(sum(is.na(df)==F))
+      summary[1,4] <- sum(is.na(df)==F)
       fill <- scale_fill_grey(start=0.3,end=0.9,labels=paste(levels(factor(summary[[1]]))))
       if(is.null(ymajor)==F) {scale_y_continuous <- scale_y_continuous(breaks=seq(ylim[1],ylim[2],ymajor),expand = c(0,0))}
       if(is.null(ymajor)==T) {scale_y_continuous <- scale_y_continuous(expand = c(0,0))}
@@ -152,8 +158,8 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
 
     # One DV, one between-subjects IV
     if (is.null(iv1)==F&is.null(iv2)==T) {
-      summary <- data.frame(matrix(0,nrow=nlevels(factor(iv1)),ncol=3))
-      colnames(summary) <- c(iv_1,"M","SE")
+      summary <- data.frame(matrix(0,nrow=nlevels(factor(iv1)),ncol=4))
+      colnames(summary) <- c(iv_1,"M","SE","N")
       counter <- 1
       for (j in 1:nlevels(factor(iv1))) {
         summary[counter,1] <- levels(factor(iv1))[j]
@@ -164,6 +170,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
       for (i in 1:(nlevels(factor(iv1)))) {
         summary[i,2] <- mean(df[df[[2]]==summary[i,1],colnames(df)[1]],na.rm=T)
         summary[i,3] <- sd(df[df[[2]]==summary[i,1],colnames(df)[1]],na.rm=T)/sqrt(sum(df[[2]]==summary[i,1],na.rm=T))
+        summary[i,4] <- sum(df[[2]]==summary[i,1],na.rm=T)
       }
 
       fill <- scale_fill_grey(start=0.3,end=0.9,labels=paste(levels(factor(summary[[1]]))))
@@ -176,8 +183,8 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
 
     # One DV, two between-subjects IVs
     if (is.null(iv2)==F&is.null(iv3)==T) {
-      summary <- data.frame(matrix(0,nrow=nlevels(factor(iv1))*nlevels(factor(iv2)),ncol=4))
-      colnames(summary) <- c(iv_1,iv_2,"M","SE")
+      summary <- data.frame(matrix(0,nrow=nlevels(factor(iv1))*nlevels(factor(iv2)),ncol=5))
+      colnames(summary) <- c(iv_1,iv_2,"M","SE","N")
       counter <- 1
       for (j in 1:nlevels(factor(iv2))) {
         for (k in 1:nlevels(factor(iv1))) {
@@ -196,6 +203,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
       for (i in 1:(nlevels(factor(iv1))*nlevels(factor(iv2)))) {
         summary[i,3] <- mean(df[df[[2]]==summary[i,1]&df[[3]]==summary[i,2],colnames(df)[1]],na.rm=T)
         summary[i,4] <- sd(df[df[[2]]==summary[i,1]&df[[3]]==summary[i,2],colnames(df)[1]],na.rm=T)/sqrt(sum(df[[2]]==summary[i,1]&df[[3]]==summary[i,2],na.rm=T))
+        summary[i,5] <- sum(df[[2]]==summary[i,1]&df[[3]]==summary[i,2],na.rm=T)
       }
 
       fill <- scale_fill_grey(start=0.3,end=0.9,labels=paste(levels(factor(summary[[1]]))))
@@ -208,8 +216,8 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
 
     # One DV, three between-subjects IVs
     if (is.null(iv3)==F) {
-      summary <- data.frame(matrix(0,nrow=nlevels(factor(iv1))*nlevels(factor(iv2))*nlevels(factor(iv3)),ncol=5))
-      colnames(summary) <- c(iv_1,iv_2,iv_3,"M","SE")
+      summary <- data.frame(matrix(0,nrow=nlevels(factor(iv1))*nlevels(factor(iv2))*nlevels(factor(iv3)),ncol=6))
+      colnames(summary) <- c(iv_1,iv_2,iv_3,"M","SE","N")
       counter <- 1
       for (h in 1:nlevels(factor(iv3))) {
         for (j in 1:nlevels(factor(iv2))) {
@@ -243,6 +251,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
       for (i in 1:(nlevels(factor(iv1))*nlevels(factor(iv2))*nlevels(factor(iv3)))) {
         summary[i,4] <- mean(df[df[[2]]==summary[i,1]&df[[3]]==summary[i,2]&df[[4]]==summary[i,3],colnames(df)[1]],na.rm=T)
         summary[i,5] <- sd(df[df[[2]]==summary[i,1]&df[[3]]==summary[i,2]&df[[4]]==summary[i,3],colnames(df)[1]],na.rm=T)/sqrt(sum(df[[2]]==summary[i,1]&df[[3]]==summary[i,2]&df[[4]]==summary[i,3],na.rm=T))
+        summary[i,6] <- sum(df[[2]]==summary[i,1]&df[[3]]==summary[i,2]&df[[4]]==summary[i,3],na.rm=T)
       }
 
       fill <- scale_fill_grey(start=0.3,end=0.9,labels=paste(levels(factor(summary[[1]]))))
@@ -273,13 +282,14 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
     # One within-subjects DV, no between-subjects DVs
     if(is.null(iv1)==T) {
       dv1_num <- ncol(dv1)
-      summary <- data.frame(matrix(rep(0,3*dv1_num),ncol=3))
-      colnames(summary) <- c("dv1","M","SE")
+      summary <- data.frame(matrix(rep(0,4*dv1_num),ncol=4))
+      colnames(summary) <- c("dv1","M","SE","N")
 
       for (i in 1:nrow(summary)) {summary[i,1] <- colnames(dv1)[i]}
       for (i in 1:nrow(summary)) {summary[i,2] <- mean(dv1[[i]],na.rm=T)}
       for (i in 1:nrow(summary)) {summary[i,3] <- sd(dv1[[i]],na.rm=T)/sqrt(sum(is.na(dv1[[i]])==F))}
-
+      for (i in 1:nrow(summary)) {summary[i,4] <- sum(is.na(dv1[[i]])==F)}
+      
       if(is.null(ymajor)==F) {scale_y_continuous <- scale_y_continuous(breaks=seq(ylim[1],ylim[2],ymajor),expand = c(0,0))}
       if(is.null(ymajor)==T) {scale_y_continuous <- scale_y_continuous(expand = c(0,0))}
       summary$dv1 <- factor(summary$dv1,levels=unique(as.character(summary$dv1)))
@@ -294,8 +304,8 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
       n_dv1 <- ncol(dv1)
       iv1 <- factor(iv1)
       nlevels_iv1 <- nlevels(iv1)
-      summary <- data.frame(matrix(c(rep(0,4*n_dv1*nlevels_iv1)),ncol=4))
-      colnames(summary) <- c("iv1","dv1","M","SE")
+      summary <- data.frame(matrix(c(rep(0,5*n_dv1*nlevels_iv1)),ncol=5))
+      colnames(summary) <- c("iv1","dv1","M","SE","N")
 
       # fill in condition
       for (i in 1:nrow(summary)) {
@@ -317,6 +327,11 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
         summary[i,4] <- sd(dv1[which(iv1==summary[i,1]),summary[i,2]],na.rm=T)/sqrt(sum(iv1==summary[i,1]&!is.na(dv1[[summary[i,2]]]),na.rm=T))
       }
 
+      # fill in Ns
+      for (i in 1:nrow(summary)) {
+        summary[i,5] <- sum(iv1==summary[i,1]&!is.na(dv1[[summary[i,2]]]),na.rm=T)
+      }
+      
       summary$dv1 <- factor(summary$dv1,levels=unique(as.character(summary$dv1)))
 
       if(is.null(ymajor)==F) {scale_y_continuous <- scale_y_continuous(breaks=seq(ylim[1],ylim[2],ymajor),expand = c(0,0))}
@@ -336,7 +351,8 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
       dv1_num <- ncol(dv1)
 
       # create summary data frame
-      summary <- data.frame(matrix(rep(0,5*ncol(dv1)*iv1_num*iv2_num),ncol=5)); colnames(summary) <- c("iv1","iv2","dv1","M","SE")
+      summary <- data.frame(matrix(rep(0,6*ncol(dv1)*iv1_num*iv2_num),ncol=6))
+      colnames(summary) <- c("iv1","iv2","dv1","M","SE","N")
 
       # fill in iv1
       for (i in 1:nrow(summary)) {summary[i,1] <- iv1_levels[ceiling(i/(nrow(summary)/iv1_num))]}
@@ -357,6 +373,11 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
         summary[i,5] <- sd(dv1[which(iv1==summary[i,1]&iv2==summary[i,2]),summary[i,3]],na.rm=T)/sqrt(sum(iv1==summary[i,1]&iv2==summary[i,2]&!is.na(dv1[[summary[i,3]]]),na.rm=T))
       }
 
+      # fill in Ns
+      for (i in 1:nrow(summary)) {
+        summary[i,6] <- sum(iv1==summary[i,1]&iv2==summary[i,2]&!is.na(dv1[[summary[i,3]]]),na.rm=T)
+      }
+      
       fill <- scale_fill_grey(labels=paste(levels(factor(summary[[3]]))))
 
       summary$dv1 <- factor(summary$dv1,levels=unique(as.character(summary$dv1)))
@@ -370,13 +391,13 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
 
   ### Rename entries in the summary table and create the legend
   # Replace underscores and periods with spaces.
-  if(ncol(summary)>2) {
-    for (j in 1:(ncol(summary)-2)) {
-      if(ncol(summary)==3) {summary <- summary[order(as.character(summary[,1])),]}
-      if(ncol(summary)==4) {summary <- summary[order(as.character(summary[,1]),as.character(summary[,2])),]}
-      if(ncol(summary)==5) {summary <- summary[order(as.character(summary[,1]),as.character(summary[,2]),as.character(summary[,3])),]}
-      if(ncol(summary)==6) {summary <- summary[order(as.character(summary[,1]),as.character(summary[,2]),as.character(summary[,3]),as.character(summary[,4])),]}
-      if(ncol(summary)==7) {summary <- summary[order(as.character(summary[,1]),as.character(summary[,2]),as.character(summary[,3]),as.character(summary[,4]),as.character(summary[,5])),]}
+  if(ncol(summary)>3) {
+    for (j in 1:(ncol(summary)-3)) {
+      if(ncol(summary)==4) {summary <- summary[order(as.character(summary[,1])),]}
+      if(ncol(summary)==5) {summary <- summary[order(as.character(summary[,1]),as.character(summary[,2])),]}
+      if(ncol(summary)==6) {summary <- summary[order(as.character(summary[,1]),as.character(summary[,2]),as.character(summary[,3])),]}
+      if(ncol(summary)==7) {summary <- summary[order(as.character(summary[,1]),as.character(summary[,2]),as.character(summary[,3]),as.character(summary[,4])),]}
+      if(ncol(summary)==8) {summary <- summary[order(as.character(summary[,1]),as.character(summary[,2]),as.character(summary[,3]),as.character(summary[,4]),as.character(summary[,5])),]}
       summary[[j]] <- as.factor(summary[[j]])
       summary[[j]] <- factor(summary[[j]],levels=unique(summary[[j]]))
       for (i in 1:nlevels(summary[[j]])) {
@@ -463,9 +484,9 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
   }
 
   ### Reorder the levels in each column of the summary data frame ###
-  if(is.null(reorder1)==T&ncol(summary)>2) {reorder1 <- unique(summary[[1]]); null1 <- F}
-  if(is.null(reorder2)==T&ncol(summary)>3) {reorder2 <- unique(summary[[2]]); null2 <- F}
-  if(is.null(reorder3)==T&ncol(summary)>4) {reorder3 <- unique(summary[[3]]); null3 <- F}
+  if(is.null(reorder1)==T&ncol(summary)>3) {reorder1 <- unique(summary[[1]]); null1 <- F}
+  if(is.null(reorder2)==T&ncol(summary)>4) {reorder2 <- unique(summary[[2]]); null2 <- F}
+  if(is.null(reorder3)==T&ncol(summary)>5) {reorder3 <- unique(summary[[3]]); null3 <- F}
 
   if(is.null(reorder1)==F&is.null(reorder2)==T) {
     summary <- summary[order(match(summary[[1]],reorder1)),]
@@ -479,10 +500,10 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
     summary <- summary[order(match(summary[[1]],reorder1),match(summary[[2]],reorder2),match(summary[[3]],reorder3)),]
   }
 
-  if(ncol(summary)>2) {summary[[1]] <- factor(summary[[1]],levels=unique(summary[[1]]))}
-  if(ncol(summary)>3) {summary[[2]] <- factor(summary[[2]],levels=unique(summary[[2]]))}
-  if(ncol(summary)>4) {summary[[3]] <- factor(summary[[3]],levels=unique(summary[[3]]))}
-  if(ncol(summary)>5) {summary[[4]] <- factor(summary[[4]],levels=unique(summary[[4]]))}
+  if(ncol(summary)>3) {summary[[1]] <- factor(summary[[1]],levels=unique(summary[[1]]))}
+  if(ncol(summary)>4) {summary[[2]] <- factor(summary[[2]],levels=unique(summary[[2]]))}
+  if(ncol(summary)>5) {summary[[3]] <- factor(summary[[3]],levels=unique(summary[[3]]))}
+  if(ncol(summary)>6) {summary[[4]] <- factor(summary[[4]],levels=unique(summary[[4]]))}
 
   ### Create legends & fill parameters
   legend_column <- NULL
@@ -512,43 +533,65 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,ylim=NULL,ymajor=NULL,
 
   ### Plot summary table
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==T) {
+    if(errorbar=="se") {errorbar_multiplier = 1}
+    if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
+    
     assign(as.character(summary[1,1]),summary[1,1])
-    plot <- eval(parse(text=paste("ggplot(summary,aes(x=",paste("`",as.character(summary[1,1]),"`",sep=""),",y=summary[[2]])) + coord_cartesian(ylim=ylim) + labs(title=title) + theme(plot.title=element_text(face=",shQuote("bold"),",color= ",shQuote("black"),",size=size.title))+theme(plot.title = element_text(color= ",shQuote("black"),",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=element_blank())+labs(y=ylab)+labs(x=xlab)+geom_bar(size=1,stat=",shQuote("identity"),",color=",shQuote("black"),",position=position_dodge(width=0.75),width=0.75)  +fill+legend+theme(plot.background = element_rect(fill = ",shQuote("white"),", colour = ",shQuote("white"),"))+ theme(panel.grid.major.y = element_line(colour=",shQuote("black"),", size=1),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= ",shQuote("black"),"))+scale_y_continuous+ theme(strip.background = element_rect(fill=",shQuote("white"),"))+theme(strip.text.x = element_text(size = size.panel.title,face=",shQuote("bold"),",color=",shQuote("black"),"))+theme(panel.background = element_rect(colour = ",shQuote("black"),", fill = ",shQuote("white"),", size = 1),panel.border = element_rect(colour = ",shQuote("black"),", fill=NA, size=1),axis.line = element_line(colour = ",shQuote("black"),",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+geom_errorbar(aes(ymin=summary[[2]]-summary[[3]],ymax=summary[[2]]+summary[[3]]),width=0.15,size=0.8,colour=",shQuote("gray21"),",position=position_dodge(.75))")))
+    plot <- eval(parse(text=paste("ggplot(summary,aes(x=",paste("`",as.character(summary[1,1]),"`",sep=""),",y=summary[[2]])) + coord_cartesian(ylim=ylim) + labs(title=title) + theme(plot.title=element_text(face=",shQuote("bold"),",color= ",shQuote("black"),",size=size.title))+theme(plot.title = element_text(color= ",shQuote("black"),",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=element_blank())+labs(y=ylab)+labs(x=xlab)+geom_bar(size=1,stat=",shQuote("identity"),",color=",shQuote("black"),",position=position_dodge(width=0.75),width=0.75)  +fill+legend+theme(plot.background = element_rect(fill = ",shQuote("white"),", colour = ",shQuote("white"),"))+ theme(panel.grid.major.y = element_line(colour=",shQuote("black"),", size=1),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= ",shQuote("black"),"))+scale_y_continuous+ theme(strip.background = element_rect(fill=",shQuote("white"),"))+theme(strip.text.x = element_text(size = size.panel.title,face=",shQuote("bold"),",color=",shQuote("black"),"))+theme(panel.background = element_rect(colour = ",shQuote("black"),", fill = ",shQuote("white"),", size = 1),panel.border = element_rect(colour = ",shQuote("black"),", fill=NA, size=1),axis.line = element_line(colour = ",shQuote("black"),",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour=",shQuote("gray21"),",position=position_dodge(.75))")))
   }
 
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==F&is.null(iv2)==T) {
+    if(errorbar=="se") {errorbar_multiplier = 1}
+    if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
     plot <- ggplot(summary,aes(x=summary[[1]],y=summary[[2]])) + coord_cartesian(ylim=ylim) + labs(title=title) + theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",fill="gray80",position=position_dodge(width=0.75),width=0.75)  + guides(fill=guide_legend(title=iv_1)) + legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
-      geom_errorbar(aes(ymin=summary[[2]]-summary[[3]],ymax=summary[[2]]+summary[[3]]),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+      geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==T) {
-    plot <- ggplot(summary, aes(fill=summary[[1]], y=summary[[3]], x=summary[[2]]))+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75) + guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+geom_errorbar(aes(ymin=summary[[3]]-summary[[4]],ymax=summary[[3]]+summary[[4]]),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+    if(errorbar=="se") {errorbar_multiplier = 1}
+    if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[5]]-1)}
+    plot <- ggplot(summary, aes(fill=summary[[1]], y=summary[[3]], x=summary[[2]]))+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75) + guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
+      geom_errorbar(aes(ymin=summary[[3]]-summary[[4]]*errorbar_multiplier,ymax=summary[[3]]+summary[[4]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {
-    plot <- ggplot(summary, aes(fill=summary[[3]], x=summary[[2]], y=summary[[4]]))+ facet_wrap(~ summary[[1]],scales="free_x")+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+geom_errorbar(aes(ymin=summary[[4]]-summary[[5]],ymax=summary[[4]]+summary[[5]]),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+    if(errorbar=="se") {errorbar_multiplier = 1}
+    if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[6]]-1)}
+    plot <- ggplot(summary, aes(fill=summary[[3]], x=summary[[2]], y=summary[[4]]))+ facet_wrap(~ summary[[1]],scales="free_x")+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
+      geom_errorbar(aes(ymin=summary[[4]]-summary[[5]]*errorbar_multiplier,ymax=summary[[4]]+summary[[5]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
   if(is.data.frame(dv1)==T&is.null(iv1)==T) {
-    plot <- ggplot(summary, aes(y=summary[[2]], x=summary[[1]],fill=levels(summary[[1]])))+coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+theme(legend.position="none",legend.title=element_blank(),legend.text = element_text(color="black",size=size.legend.text))+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+geom_errorbar(aes(ymin=summary[[2]]-summary[[3]],ymax=summary[[2]]+summary[[3]]),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+    if(errorbar=="se") {errorbar_multiplier = 1}
+    if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
+    plot <- ggplot(summary, aes(y=summary[[2]], x=summary[[1]],fill=levels(summary[[1]])))+coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+theme(legend.position="none",legend.title=element_blank(),legend.text = element_text(color="black",size=size.legend.text))+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
+      geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
   if(is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==T) {
-    plot <- ggplot(summary, aes(fill=summary[[2]], x=summary[[1]], y=summary[[3]]))+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+geom_errorbar(aes(ymin=summary[[3]]-summary[[4]],ymax=summary[[3]]+summary[[4]]),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+    if(errorbar=="se") {errorbar_multiplier = 1}
+    if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[5]]-1)}
+    plot <- ggplot(summary, aes(fill=summary[[2]], x=summary[[1]], y=summary[[3]]))+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
+      geom_errorbar(aes(ymin=summary[[3]]-summary[[4]]*errorbar_multiplier,ymax=summary[[3]]+summary[[4]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
   if(is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==F) {
-    plot <- ggplot(summary, aes(fill=summary[[2]], x=summary[[1]], y=summary[[4]]))+ facet_wrap(~ summary[[3]],scales="free_x")+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+geom_errorbar(aes(ymin=summary[[4]]-summary[[5]],ymax=summary[[4]]+summary[[5]]),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+    if(errorbar=="se") {errorbar_multiplier = 1}
+    if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[6]]-1)}
+    plot <- ggplot(summary, aes(fill=summary[[2]], x=summary[[1]], y=summary[[4]]))+ facet_wrap(~ summary[[3]],scales="free_x")+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
+      geom_errorbar(aes(ymin=summary[[4]]-summary[[5]]*errorbar_multiplier,ymax=summary[[4]]+summary[[5]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
   summary2 <- summary
-  for (i in (ncol(summary2)-1):ncol(summary2)) {
+  for (i in (ncol(summary2)-2):(ncol(summary2)-1)) {
     for (j in 1:nrow(summary2)) {
       summary2[j,i] <- wrap.rd0(as.numeric(paste(summary2[j,i])),2)
     }
   }
   rownames(summary2) <- NULL
+  summary2 <- summary2[,c(1:(ncol(summary2)-3),ncol(summary2),(ncol(summary2)-2):(ncol(summary2)-1))]
   print(summary2)
-  print("Note: Error bars are +/-1 SE.")
+  if(errorbar=="se") {print("Note: Error bars are +/-1 standard error.")}
+  if(errorbar=="ci") {print("Note: Error bars represent 95% confidence intervals without p-value adjustment.")}
   return(plot)
 }

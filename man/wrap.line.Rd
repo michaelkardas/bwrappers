@@ -8,6 +8,7 @@ wrap.line(
   dv1,
   iv1 = NULL,
   iv2 = NULL,
+  errorbar = "se",
   ylim = NULL,
   ymajor = NULL,
   ylab = NULL,
@@ -31,6 +32,10 @@ wrap.line(
 \item{dv1}{Multiple column vectors containing the within-subjects dependent variables}
 
 \item{iv1, iv2}{Column vectors containing the independent variables}
+
+\item{errorbar}{Character string specifying the length of the error bars:
+\code{"se"} displays +/-1 standard error; \code{"ci"} displays 95\% confidence intervals
+without p-value adjustment}
 
 \item{ylim}{Numeric vector containing lower and upper y-axis limits}
 

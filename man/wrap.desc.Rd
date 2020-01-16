@@ -13,8 +13,7 @@ wrap.desc(dv1, iv1 = NULL, iv2 = NULL)
 }
 \description{
 Computes descriptive statistics for one dependent variable, parsed
-by between 0 and 2 independent variables. Note that the function uses a t
-distribution to compute confidence intervals.
+by between 0 and 2 independent variables.
 }
 \examples{
 ## Parsing the dependent variable by 0 independent variables

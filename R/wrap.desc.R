@@ -1,8 +1,7 @@
 #' Descriptive statistics
 #'
 #' @description Computes descriptive statistics for one dependent variable, parsed
-#' by between 0 and 2 independent variables. Note that the function uses a t
-#' distribution to compute confidence intervals.
+#' by between 0 and 2 independent variables.
 #'
 #' @param dv1 Column vector containing the dependent variable
 #' @param iv1,iv2 Column vectors containing the independent variables
@@ -31,7 +30,6 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
   if(is.data.frame(dv1)) {if(ncol(dv1)>1) {return("Error: Must input one column maximum for dv1.")}}
   if(is.null(iv1)==F&is.null(iv2)==F) {if(substitute(iv1)==substitute(iv2)) {return("Error: You inputted the same column for iv1 and iv2.")}}
   if(class(dv1)!="numeric"&class(dv1)!="factor") {return("Error: Argument dv1 must be either a factor or numeric variable.")}
-  if(class(dv1)=="numeric") {print("ASSUMPTIONS: Note that the function uses a t distribution to compute confidence intervals.")}
   if(is.null(iv1)==T) {
     if(any(is.na(dv1))) {print("Note: Your inputs include one or more NA entries. The function will ignore the rows containing these entries.")}
     dv1 <- dv1[complete.cases(dv1)]
