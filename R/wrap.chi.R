@@ -37,6 +37,7 @@ wrap.chi <- function(dv1,iv1=NULL,p=rep(1/nlevels(factor(dv1)),nlevels(factor(dv
     dv1 <- dv1[complete.cases]
     iv1 <- iv1[complete.cases]
   }
+  linebreak <- F
 
   if(correct!=T&correct!=F) {return("Argument correct must be TRUE or FALSE.")}
 
@@ -58,8 +59,8 @@ wrap.chi <- function(dv1,iv1=NULL,p=rep(1/nlevels(factor(dv1)),nlevels(factor(dv
     eval(parse(text=string))
     b <- chisq.test(matrix[[2]],correct=correct)
     if(nrow(matrix[[2]])==2&ncol(matrix[[2]])==2) {
-      if(correct==F) {print("Note that the function has NOT applied Yates's correction.")}
-      if(correct==T) {print("Note that the function HAS applied Yates's correction.")}
+      if(correct==F) {linebreak <- T; print("Note that the function has NOT applied Yates's correction.")}
+      if(correct==T) {linebreak <- T; print("Note that the function HAS applied Yates's correction.")}
     }
   }
 
@@ -76,10 +77,10 @@ wrap.chi <- function(dv1,iv1=NULL,p=rep(1/nlevels(factor(dv1)),nlevels(factor(dv
 
   if(b$p.value < .001) {
     write_clip(allow_non_interactive = TRUE, content = paste("# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p < .001",sep=""))
-    return(cat(if(nrow(matrix[[2]])==2&ncol(matrix[[2]])==2) {"\n"},"# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p < .001",sep=""))
+    return(cat(if(linebreak==T) {"\n"},"# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p < .001",sep=""))
   }
   else {
     write_clip(allow_non_interactive = TRUE, content = paste("# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p = ",wrap.rd(b$p.value,3),sep=""))
-    return(cat(if(nrow(matrix[[2]])==2&ncol(matrix[[2]])==2) {"\n"},"# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p = ",wrap.rd(b$p.value,3),sep=""))
+    return(cat(if(linebreak==T) {"\n"},"# X2(",b$parameter,", N = ",n,") = ",wrap.rd0(b$statistic,2),", p = ",wrap.rd(b$p.value,3),sep=""))
   }
 }
