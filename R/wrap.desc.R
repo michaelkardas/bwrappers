@@ -82,6 +82,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
           clip <- paste(clip,", ",sum(dv1==levels(dv1)[j],na.rm=T)," ",levels(dv1)[j]," (",wrap.rd0(dv1.list[[j]],2),"%)",sep="")
         }
       }
+      if(substr(clip,1,1)=="\n") {clip <- substr(clip,2,nchar(clip))}
       write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       string <- cat("# N = ",sum(!is.na(dv1)),": ",sep="")
@@ -124,6 +125,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
       }
 
       clip <- paste(substr(clip,1,nchar(clip)-2))
+      if(substr(clip,1,1)=="\n") {clip <- substr(clip,2,nchar(clip))}
       write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       e <- "\n"
@@ -191,6 +193,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
       clip <- gsub("))%","%)",x=clip,fixed=T)
       clip <- gsub("%%)","%)",x=clip,fixed=T)
       clip <- gsub("%)0)%","%)",x=clip,fixed=T)
+      if(substr(clip,1,1)=="\n") {clip <- substr(clip,2,nchar(clip))}
       write_clip(allow_non_interactive = TRUE, content = paste(clip))
       return(cat(clip))
     }
@@ -266,6 +269,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
         }
       }
       clip <- paste(substr(clip,1,nchar(clip)-1))
+      if(substr(clip,1,1)=="\n") {clip <- substr(clip,2,nchar(clip))}
       write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       string <- ""
@@ -327,6 +331,7 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
         }
       }
       clip <- paste(substr(clip,1,nchar(clip)-1))
+      if(substr(clip,1,1)=="\n") {clip <- substr(clip,2,nchar(clip))}
       write_clip(allow_non_interactive = TRUE, content = paste(clip))
 
       string <- ""
