@@ -77,7 +77,6 @@ wrap.desc <- function(dv1,iv1=NULL,iv2=NULL) {
         if(j==1) {
           clip <- paste(clip,sum(dv1==levels(dv1)[j],na.rm=T)," ",levels(dv1)[j]," (",wrap.rd0(dv1.list[[j]],2),"%)",sep="")
         }
-
         if(j>1) {
           clip <- paste(clip,", ",sum(dv1==levels(dv1)[j],na.rm=T)," ",levels(dv1)[j]," (",wrap.rd0(dv1.list[[j]],2),"%)",sep="")
         }
