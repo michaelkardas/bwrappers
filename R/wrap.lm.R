@@ -23,6 +23,8 @@
 #' @export
 wrap.lm <- function(formula,standardized=FALSE) {
 
+  options(scipen=999)
+  
   # Error checks
   if(standardized!=FALSE&standardized!=TRUE) {return("Argument standardized must be equal to FALSE or TRUE.")}
   print(paste("Note: Your contrast options are currently set to unordered = ",options('contrasts')$contrasts[[1]],", ordered = ",options('contrasts')$contrasts[[2]],".",sep=""))

@@ -38,6 +38,8 @@ wrap.hist <- function(dv1,likert=F,percent=T,binwidth=1,ylim=NULL,
                       xlab=NULL,title=NULL,size.axis.text.y = 12,
                       size.axis.text.x=12,size.title=24) {
 
+  options(scipen=999)
+
   # Error checks
   if(is.numeric(dv1)==F) {return("Error: Argument dv1 must be numeric.")}
   if(is.null(likert)==T) {return("Error: Likert parameter must equal TRUE or FALSE.")}

@@ -22,6 +22,7 @@
 #' @export
 wrap.simple <- function(dv1,iv1,iv2,adjustment="none") {
 
+  options(scipen=999)
   x <- options('contrasts') # store original contrasts
   options(contrasts = c('contr.sum','contr.poly'))
 

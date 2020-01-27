@@ -19,6 +19,8 @@
 #' @export
 wrap.split <- function(df, iv1, iv2 = NULL, iv3 = NULL) {
 
+  options(scipen=999)
+  
   if(is.null(substitute(iv2))==T) {
     colnames <- c((substitute(iv1)))
   }

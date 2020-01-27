@@ -58,6 +58,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
                      rename2=NULL,rename3=NULL,reorder1=NULL,reorder2=NULL,
                      reorder3=NULL) {
 
+  options(scipen=999)
   if(is.data.frame(dv1)==T) {if(ncol(dv1)==1) {dv1 <- as.numeric(unlist(dv1))}}
 
   # Error checks

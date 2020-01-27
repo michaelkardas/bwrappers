@@ -21,6 +21,8 @@
 #' @export
 wrap.generate <- function(df,string1,string2,operation, newString = operation) {
 
+  options(scipen=999)
+
   # Error checks
   if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return(paste("Error: Cannot find ",substitute(df)," in the Global Environment.",sep=""))}
   if(is.null(string1)==T|is.null(string2)==T) {return("Error: Must enter character strings for parameters string1 and string2")}

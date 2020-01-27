@@ -13,6 +13,8 @@
 #' @export
 #' @keywords internal
 wrap.rd0 <- function(num,places=2) {
+  options(scipen=999)
+  
   if(places<0 | places%%1!=0) {
     return("Argument places must be an integer greater than or equal to zero.")
   }

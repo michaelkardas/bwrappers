@@ -53,6 +53,8 @@ wrap.line <- function(dv1,iv1=NULL,iv2=NULL,errorbar="se",ylim=NULL,ymajor=NULL,
                       reposition=NULL,rename1=NULL,rename2=NULL,rename3=NULL,
                       reorder1=NULL,reorder2=NULL,reorder3=NULL) {
 
+  options(scipen=999)
+  
   # Error checks
   if(is.null(dv1)) {return(paste("Cannot find the column vector inputted to parameter dv1."))}
   if(is.null(substitute(iv1))==F) {if(is.null(iv1)) {return(paste("Cannot find the column vector inputted to parameter iv1."))}}
