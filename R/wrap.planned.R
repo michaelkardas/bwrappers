@@ -55,7 +55,8 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
   # Test for equality of variance
   output <- lawstat::levene.test(dv1,iv1,location="median")
   if(output$p.value<=.05) {
-    levene_string <- print(paste("Note: In your data, variance differs significantly by condition (across all levels of iv1), ",substr(capture.output(wrap.levene(dv1,iv1,"median")),3,nchar(capture.output(wrap.levene(dv1,iv1,"median")))),".",sep=""))
+    levene_output <- capture.output(wrap.levene(dv1,iv1,"median"))
+    levene_string <- print(paste("Note: In your data, variance differs significantly by condition (across all levels of iv1), ",substr(levene_output,3,nchar(levene_output)),".",sep=""))
   }
 
   x <- options('contrasts') # store original contrasts

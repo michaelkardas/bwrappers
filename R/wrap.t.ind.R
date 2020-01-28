@@ -52,7 +52,8 @@ wrap.t.ind  <- function(dv1, iv1, var.equal = T) {
   # Test for equality of variance
   output <- lawstat::levene.test(dv1,iv1,location="median")
   if(output$p.value<=.05) {
-    levene_string <- print(paste("Note: In your data, variance differs significantly by condition, ",substr(capture.output(wrap.levene(dv1,iv1,"median")),3,nchar(capture.output(wrap.levene(dv1,iv1,"median")))),".",sep=""))
+    levene_output <- capture.output(wrap.levene(dv1,iv1,"median"))
+    levene_string <- print(paste("Note: In your data, variance differs significantly by condition, ",substr(levene_output,3,nchar(levene_output)),".",sep=""))
   }
 
   # t-test results
