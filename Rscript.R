@@ -64,7 +64,7 @@ wrap.chi(dv1 = bdata$DV2) # One-way goodness-of-fit test
 wrap.chi(dv1 = bdata$DV2, iv1 = bdata$IV2) # Two-way contingency test
 
 # Levene's Test for Equality of Variances
-wrap.levene(bdata$DV5,bdata$IV2)
+wrap.levene(bdata$DV5, bdata$IV2, location = "median")
 
 ### Functions For Data Visualization ###
 # Bar Plots
