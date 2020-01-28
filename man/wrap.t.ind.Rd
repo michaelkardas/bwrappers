@@ -11,7 +11,7 @@ wrap.t.ind(dv1, iv1, var.equal = T)
 
 \item{iv1}{Column vector containing the independent variable}
 
-\item{var.equal}{A logical argument: If TRUE, the function assumes equal variances across conditions; if FALSE, the function does not assume equal variances}
+\item{var.equal}{A logical argument: If TRUE, the function assumes equality of variances across conditions; if FALSE, the function does not assume equality of variances}
 }
 \description{
 Performs independent-samples t tests. The function delegates

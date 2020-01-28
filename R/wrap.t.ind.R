@@ -7,7 +7,7 @@
 #'
 #' @param dv1 Column vector containing the dependent variable
 #' @param iv1 Column vector containing the independent variable
-#' @param var.equal A logical argument: If TRUE, the function assumes equal variances across conditions; if FALSE, the function does not assume equal variances
+#' @param var.equal A logical argument: If TRUE, the function assumes equality of variances across conditions; if FALSE, the function does not assume equality of variances
 #'
 #' @seealso \code{\link[stats]{t.test}}
 #'
