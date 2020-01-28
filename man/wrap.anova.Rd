@@ -18,9 +18,11 @@ OR multiple column vectors containing the within-subjects dependent variables}
 Computes main effects and interaction effects for ANOVA with
 up to 1 within-subjects factor and up to 3 between-subjects factors. The function
 delegates the primary computations to \code{\link[ez]{ezANOVA}}. Note that this
-function assumes categorical (i.e., unordered) independent variables and fixed
-effects, and does not apply sphericity corrections. In the output, hp2 denotes
-partial eta squared.
+function assumes categorical (i.e., unordered) independent variables, fixed effects,
+equality of variance for between-subjects factors, and sphericity for within-subjects
+factors. If variance differs significantly by condition in a fully between-subjects
+analysis, or if sphericity does not hold, the function additionally displays
+assumption checks. In the output, hp2 denotes partial eta squared.
 }
 \examples{
 ## ANOVA with 1 within-subjects factor

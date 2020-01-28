@@ -3,9 +3,11 @@
 #' @description Computes main effects and interaction effects for ANOVA with
 #' up to 1 within-subjects factor and up to 3 between-subjects factors. The function
 #' delegates the primary computations to \code{\link[ez]{ezANOVA}}. Note that this
-#' function assumes categorical (i.e., unordered) independent variables and fixed
-#' effects, and does not apply sphericity corrections. In the output, hp2 denotes
-#' partial eta squared.
+#' function assumes categorical (i.e., unordered) independent variables, fixed effects,
+#' equality of variance for between-subjects factors, and sphericity for within-subjects
+#' factors. If variance differs significantly by condition in a fully between-subjects
+#' analysis, or if sphericity does not hold, the function additionally displays
+#' assumption checks. In the output, hp2 denotes partial eta squared.
 #'
 #' @param dv1 Column vector containing the between-subjects dependent variable
 #' OR multiple column vectors containing the within-subjects dependent variables
@@ -95,7 +97,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
   if(is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==T) {df_temp <- as.data.frame(cbind(dv1,iv1,iv2)); colnames(df_temp)[(ncol(df_temp)-1):ncol(df_temp)] <- c(colname1,colname2)}
   if(is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {df_temp <- as.data.frame(cbind(dv1,iv1,iv2,iv3)); colnames(df_temp)[(ncol(df_temp)-2):ncol(df_temp)] <- c(colname1,colname2,colname3)}
 
-  print(paste("ASSUMPTIONS: This function assumes categorical (i.e., unordered) independent variables and fixed effects, and does not apply sphericity corrections. In the output, hp2 denotes partial eta squared.",sep=""))
+  print(paste("ASSUMPTIONS: This function assumes categorical (i.e., unordered) independent variables, fixed effects, equality of variance for between-subjects factors, and sphericity for within-subjects factors. In the output, hp2 denotes partial eta squared.",sep=""))
   print(paste("Note: You are currently using type ",type," sums of squares.",sep=""))
   if(is.data.frame(dv1)==F) {
 
@@ -126,7 +128,12 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
         if(length(unique(cellsizes))==1&cellsizes[1]>0) {type <- 2}
       }
 
-      Anova <- ezANOVA(data=df,dv=dv1,wid=userAnovaIDNum0,between=.(iv1,iv2,iv3),detailed=T,type=type)$ANOVA
+      ez <- ezANOVA(data=df,dv=dv1,wid=userAnovaIDNum0,between=.(iv1,iv2,iv3),detailed=T,type=type)
+      Anova <- ez$ANOVA
+      levene <- ez$`Levene's Test for Homogeneity of Variance`
+      if(levene$p <= .05 & levene$p >= .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p = ",wrap.rd(levene$p,3),", hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+      if(levene$p < .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p < .001, hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+      if(levene$p > .05) {levene_string <- ""}
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
@@ -148,6 +155,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
             "\n","# ",iv1name," x ",iv3name," (2-way interaction): F(",Anova$DFn[6],", ",Anova$DFd[6],") = ",wrap.rd0(Anova$F[6],2),", p",if (as.numeric(Anova$p[6]) < .001) {" < .001"},if (as.numeric(Anova$p[6]) >= .001) {" = "},if (as.numeric(Anova$p[6]) >= .001) {wrap.rd(Anova$p[6],3)},", hp2 = ",wrap.rd(Anova$SSn[6]/(Anova$SSn[6]+Anova$SSd[6]),2),
             "\n","# ",iv2name," x ",iv3name," (2-way interaction): F(",Anova$DFn[7],", ",Anova$DFd[7],") = ",wrap.rd0(Anova$F[7],2),", p",if (as.numeric(Anova$p[7]) < .001) {" < .001"},if (as.numeric(Anova$p[7]) >= .001) {" = "},if (as.numeric(Anova$p[7]) >= .001) {wrap.rd(Anova$p[7],3)},", hp2 = ",wrap.rd(Anova$SSn[7]/(Anova$SSn[7]+Anova$SSd[7]),2),
             "\n","# ",iv1name," x ",iv2name," x ",iv3name," (3-way interaction): F(",Anova$DFn[8],", ",Anova$DFd[8],") = ",wrap.rd0(Anova$F[8],2),", p",if (as.numeric(Anova$p[8]) < .001) {" < .001"},if (as.numeric(Anova$p[8]) >= .001) {" = "},if (as.numeric(Anova$p[8]) >= .001) {wrap.rd(Anova$p[8],3)},", hp2 = ",wrap.rd(Anova$SSn[8]/(Anova$SSn[8]+Anova$SSd[8]),2),
+            levene_string,
             sep="")
       )
     }
@@ -177,7 +185,12 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
         if(length(unique(cellsizes))==1&cellsizes[1]>0) {type <- 2}
       }
 
-      Anova <- ezANOVA(data=df,dv=dv1,wid=userAnovaIDNum0,between=.(iv1,iv2),detailed=T,type=type)$ANOVA
+      ez <- ezANOVA(data=df,dv=dv1,wid=userAnovaIDNum0,between=.(iv1,iv2),detailed=T,type=type)
+      Anova <- ez$ANOVA
+      levene <- ez$`Levene's Test for Homogeneity of Variance`
+      if(levene$p <= .05 & levene$p >= .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p = ",wrap.rd(levene$p,3),", hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+      if(levene$p < .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p < .001, hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+      if(levene$p > .05) {levene_string <- ""}
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
@@ -191,6 +204,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
         cat("\n","# ",iv1name," (main effect): F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
             "\n","# ",iv2name," (main effect): F(",Anova$DFn[3],", ",Anova$DFd[3],") = ",wrap.rd0(Anova$F[3],2),", p",if (as.numeric(Anova$p[3]) < .001) {" < .001"},if (as.numeric(Anova$p[3]) >= .001) {" = "},if (as.numeric(Anova$p[3]) >= .001) {wrap.rd(Anova$p[3],3)},", hp2 = ",wrap.rd(Anova$SSn[3]/(Anova$SSn[3]+Anova$SSd[3]),2),
             "\n","# ",iv1name," x ",iv2name," (2-way interaction): F(",Anova$DFn[4],", ",Anova$DFd[4],") = ",wrap.rd0(Anova$F[4],2),", p",if (as.numeric(Anova$p[4]) < .001) {" < .001"},if (as.numeric(Anova$p[4]) >= .001) {" = "},if (as.numeric(Anova$p[4]) >= .001) {wrap.rd(Anova$p[4],3)},", hp2 = ",wrap.rd(Anova$SSn[4]/(Anova$SSn[4]+Anova$SSd[4]),2),
+            levene_string,
             sep="")
       )
     }
@@ -217,7 +231,12 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
         if(length(unique(cellsizes))==1&cellsizes[1]>0) {type <- 2}
       }
 
-      Anova <- ezANOVA(data=df,dv=dv1,wid=userAnovaIDNum0,between=iv1,detailed=T,type=type)$ANOVA
+      ez <- ezANOVA(data=df,dv=dv1,wid=userAnovaIDNum0,between=iv1,detailed=T,type=type)
+      Anova <- ez$ANOVA
+      levene <- ez$`Levene's Test for Homogeneity of Variance`
+      if(levene$p <= .05 & levene$p >= .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p = ",wrap.rd(levene$p,3),", hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+      if(levene$p < .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p < .001, hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+      if(levene$p > .05) {levene_string <- ""}
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
@@ -227,6 +246,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
       )
       return(
         cat("\n","# F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
+            levene_string,
             sep="")
       )
     }
@@ -257,19 +277,33 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
         if(length(unique(cellsizes))==1&cellsizes[1]>0) {type <- 2}
       }
 
-      Anova <- ezANOVA(data=data.frame(temp),dv=Scale,wid=userAnovaIDNum0,within=.(Ratings),detailed=T,type=type)$ANOVA
+      ez <- ezANOVA(data=data.frame(temp),dv=Scale,wid=userAnovaIDNum0,within=.(Ratings),detailed=T,type=type)
+      Anova <- ez$ANOVA
+      mauchly_string <- ""
+      if(is.null(ez$`Mauchly's Test for Sphericity`)==F) {
+        mauchly <- ez$`Mauchly's Test for Sphericity`
+        if(mauchly$p[1]<=.05&mauchly$p[1]>=.001) {
+          mauchly_string <- paste("\n","\n","Note: The sphericity assumption does not hold, W = ",wrap.rd(mauchly$W[1],2),", p = ",wrap.rd(mauchly$p[1],3),".",sep="")
+        }
+        if(mauchly$p[1]<.001) {
+          mauchly_string <- paste("\n","\n","Note: The sphericity assumption does not hold, W = ",wrap.rd(mauchly$W[1],2),", p < .001.",sep="")
+        }
+        if(mauchly$p[1]>.05) {
+          mauchly_string <- ""
+        }
+      }
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
       data_frame$userAnovaIDNum <- NULL
 
       if (Anova$p[2]<.001) {
         write_clip(allow_non_interactive = TRUE, content = paste("# F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p < .001",", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
-        return(cat("\n"," # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p < .001",", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
+        return(cat("\n"," # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p < .001",", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),mauchly_string,sep=""))
       }
 
       else {
         write_clip(allow_non_interactive = TRUE, content = paste("# F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p = ",wrap.rd(Anova$p[2],3),", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
-        return(cat("\n"," # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p = ",wrap.rd(Anova$p[2],3),", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),sep=""))
+        return(cat("\n"," # F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$"F"[2],2),", p = ",wrap.rd(Anova$p[2],3),", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),mauchly_string,sep=""))
       }
     }
 
@@ -295,7 +329,21 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
         if(length(unique(cellsizes))==1&cellsizes[1]>0) {type <- 2}
       }
 
-      Anova <- eval(parse(text=paste0('ezANOVA(data=data.frame(temp),dv=Scale,wid=userAnovaIDNum0,within=.(Ratings),between=.(', sub('.*\\$', '', sub1)[3],'),detailed=T,type=type)$ANOVA')))
+      ez <- eval(parse(text=paste0('ezANOVA(data=data.frame(temp),dv=Scale,wid=userAnovaIDNum0,within=.(Ratings),between=.(', sub('.*\\$', '', sub1)[3],'),detailed=T,type=type)')))
+      Anova <- ez$ANOVA
+      mauchly_string <- ""
+      if(is.null(ez$`Mauchly's Test for Sphericity`)==F) {
+        mauchly <- ez$`Mauchly's Test for Sphericity`
+        if(mauchly$p[1]<=.05&mauchly$p[1]>=.001) {
+          mauchly_string <- paste("\n","\n","Note: The sphericity assumption does not hold, W = ",wrap.rd(mauchly$W[1],2),", p = ",wrap.rd(mauchly$p[1],3),".",sep="")
+        }
+        if(mauchly$p[1]<.001) {
+          mauchly_string <- paste("\n","\n","Note: The sphericity assumption does not hold, W = ",wrap.rd(mauchly$W[1],2),", p < .001.",sep="")
+        }
+        if(mauchly$p[1]>.05) {
+          mauchly_string <- ""
+        }
+      }
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
       data_frame$userAnovaIDNum <- NULL
@@ -310,6 +358,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
         cat("\n","# ",iv1name," (main effect): F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
             "\n","# Within-Subjects (main effect): F(",Anova$DFn[3],", ",Anova$DFd[3],") = ",wrap.rd0(Anova$F[3],2),", p",if (as.numeric(Anova$p[3]) < .001) {" < .001"},if (as.numeric(Anova$p[3]) >= .001) {" = "},if (as.numeric(Anova$p[3]) >= .001) {wrap.rd(Anova$p[3],3)},", hp2 = ",wrap.rd(Anova$SSn[3]/(Anova$SSn[3]+Anova$SSd[3]),2),
             "\n","# ",iv1name," x Within-Subjects (2-way interaction): F(",Anova$DFn[4],", ",Anova$DFd[4],") = ",wrap.rd0(Anova$F[4],2),", p",if (as.numeric(Anova$p[4]) < .001) {" < .001"},if (as.numeric(Anova$p[4]) >= .001) {" = "},if (as.numeric(Anova$p[4]) >= .001) {wrap.rd(Anova$p[4],3)},", hp2 = ",wrap.rd(Anova$SSn[4]/(Anova$SSn[4]+Anova$SSd[4]),2),
+            mauchly_string,
             sep="")
       )
     }
@@ -339,7 +388,21 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
         if(length(unique(cellsizes))==1&cellsizes[1]>0) {type <- 2}
       }
 
-      Anova <- eval(parse(text=paste0('ezANOVA(data=data.frame(temp),dv=Scale,wid=userAnovaIDNum0,within=.(Ratings),between=.(', sub('.*\\$', '', sub1)[3],',', sub('.*\\$', '', sub2)[3],'),detailed=T,type=type)$ANOVA')))
+      ez <- eval(parse(text=paste0('ezANOVA(data=data.frame(temp),dv=Scale,wid=userAnovaIDNum0,within=.(Ratings),between=.(', sub('.*\\$', '', sub1)[3],',', sub('.*\\$', '', sub2)[3],'),detailed=T,type=type)')))
+      Anova <- ez$ANOVA
+      mauchly_string <- ""
+      if(is.null(ez$`Mauchly's Test for Sphericity`)==F) {
+        mauchly <- ez$`Mauchly's Test for Sphericity`
+        if(mauchly$p[1]<=.05&mauchly$p[1]>=.001) {
+          mauchly_string <- paste("\n","\n","Note: The sphericity assumption does not hold, W = ",wrap.rd(mauchly$W[1],2),", p = ",wrap.rd(mauchly$p[1],3),".",sep="")
+        }
+        if(mauchly$p[1]<.001) {
+          mauchly_string <- paste("\n","\n","Note: The sphericity assumption does not hold, W = ",wrap.rd(mauchly$W[1],2),", p < .001.",sep="")
+        }
+        if(mauchly$p[1]>.05) {
+          mauchly_string <- ""
+        }
+      }
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
       data_frame$userAnovaIDNum <- NULL
@@ -362,6 +425,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
             "\n","# ",iv1name," x Within-Subjects (2-way interaction): F(",Anova$DFn[6],", ",Anova$DFd[6],") = ",wrap.rd0(Anova$F[6],2),", p",if (as.numeric(Anova$p[6]) < .001) {" < .001"},if (as.numeric(Anova$p[6]) >= .001) {" = "},if (as.numeric(Anova$p[6]) >= .001) {wrap.rd(Anova$p[6],3)},", hp2 = ",wrap.rd(Anova$SSn[6]/(Anova$SSn[6]+Anova$SSd[6]),2),
             "\n","# ",iv2name," x Within-Subjects (2-way interaction): F(",Anova$DFn[7],", ",Anova$DFd[7],") = ",wrap.rd0(Anova$F[7],2),", p",if (as.numeric(Anova$p[7]) < .001) {" < .001"},if (as.numeric(Anova$p[7]) >= .001) {" = "},if (as.numeric(Anova$p[7]) >= .001) {wrap.rd(Anova$p[7],3)},", hp2 = ",wrap.rd(Anova$SSn[7]/(Anova$SSn[7]+Anova$SSd[7]),2),
             "\n","# ",iv1name," x ",iv2name," x Within-Subjects (3-way interaction): F(",Anova$DFn[8],", ",Anova$DFd[8],") = ",wrap.rd0(Anova$F[8],2),", p",if (as.numeric(Anova$p[8]) < .001) {" < .001"},if (as.numeric(Anova$p[8]) >= .001) {" = "},if (as.numeric(Anova$p[8]) >= .001) {wrap.rd(Anova$p[8],3)},", hp2 = ",wrap.rd(Anova$SSn[8]/(Anova$SSn[8]+Anova$SSd[8]),2),
+            mauchly_string,
             sep="")
       )
     }
@@ -394,7 +458,21 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
         if(length(unique(cellsizes))==1&cellsizes[1]>0) {type <- 2}
       }
 
-      Anova <- eval(parse(text=paste0('ezANOVA(data=data.frame(temp),dv=Scale,wid=userAnovaIDNum0,within=.(Ratings),between=.(', sub('.*\\$', '', sub1)[3],',',sub('.*\\$', '', sub2)[3],',',sub('.*\\$', '', sub3)[3],'),detailed=T,type=type)$ANOVA')))
+      ez <- eval(parse(text=paste0('ezANOVA(data=data.frame(temp),dv=Scale,wid=userAnovaIDNum0,within=.(Ratings),between=.(', sub('.*\\$', '', sub1)[3],',',sub('.*\\$', '', sub2)[3],',',sub('.*\\$', '', sub3)[3],'),detailed=T,type=type)')))
+      Anova <- ez$ANOVA
+      mauchly_string <- ""
+      if(is.null(ez$`Mauchly's Test for Sphericity`)==F) {
+        mauchly <- ez$`Mauchly's Test for Sphericity`
+        if(mauchly$p[1]<=.05&mauchly$p[1]>=.001) {
+          mauchly_string <- paste("\n","\n","Note: The sphericity assumption does not hold, W = ",wrap.rd(mauchly$W[1],2),", p = ",wrap.rd(mauchly$p[1],3),".",sep="")
+        }
+        if(mauchly$p[1]<.001) {
+          mauchly_string <- paste("\n","\n","Note: The sphericity assumption does not hold, W = ",wrap.rd(mauchly$W[1],2),", p < .001.",sep="")
+        }
+        if(mauchly$p[1]>.05) {
+          mauchly_string <- ""
+        }
+      }
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
       data_frame$userAnovaIDNum <- NULL
@@ -433,6 +511,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
             "\n","# ",iv1name," x ",iv3name," x Within-Subjects (3-way interaction): F(",Anova$DFn[14],", ",Anova$DFd[14],") = ",wrap.rd0(Anova$F[14],2),", p",if (as.numeric(Anova$p[14]) < .001) {" < .001"},if (as.numeric(Anova$p[14]) >= .001) {" = "},if (as.numeric(Anova$p[14]) >= .001) {wrap.rd(Anova$p[14],3)},", hp2 = ",wrap.rd(Anova$SSn[14]/(Anova$SSn[14]+Anova$SSd[14]),2),
             "\n","# ",iv2name," x ",iv3name," x Within-Subjects (3-way interaction): F(",Anova$DFn[15],", ",Anova$DFd[15],") = ",wrap.rd0(Anova$F[15],2),", p",if (as.numeric(Anova$p[15]) < .001) {" < .001"},if (as.numeric(Anova$p[15]) >= .001) {" = "},if (as.numeric(Anova$p[15]) >= .001) {wrap.rd(Anova$p[15],3)},", hp2 = ",wrap.rd(Anova$SSn[15]/(Anova$SSn[15]+Anova$SSd[15]),2),
             "\n","# ",iv1name," x ",iv2name," x ",iv3name," x Within-Subjects (4-way interaction): F(",Anova$DFn[16],", ",Anova$DFd[16],") = ",wrap.rd0(Anova$F[16],2),", p",if (as.numeric(Anova$p[16]) < .001) {" < .001"},if (as.numeric(Anova$p[16]) >= .001) {" = "},if (as.numeric(Anova$p[16]) >= .001) {wrap.rd(Anova$p[16],3)},", hp2 = ",wrap.rd(Anova$SSn[16]/(Anova$SSn[16]+Anova$SSd[16]),2),
+            mauchly_string,
             sep="")
       )
     }
