@@ -1,26 +1,28 @@
 #' T Test (Independent Samples)
 #'
 #' @description Performs independent-samples t tests. The function delegates
-#' the primary computations to \code{\link[stats]{t.test}}.
+#' the primary computations to \code{\link[stats]{t.test}}. If variance differs
+#' significantly by condition in your data, the function also displays the results
+#' of Levene's test for equality of variances with centering at the median.
 #'
 #' @param dv1 Column vector containing the dependent variable
 #' @param iv1 Column vector containing the independent variable
-#' @param var.equal A logical argument: If TRUE, the function assumes equal variance across conditions; if FALSE, the function does not assume equal variance
+#' @param var.equal A logical argument: If TRUE, the function assumes equal variances across conditions; if FALSE, the function does not assume equal variances
 #'
 #' @seealso \code{\link[stats]{t.test}}
 #'
 #' @examples
 #' wrap.t.ind(dv1 = bdata$DV5, iv1 = bdata$IV1)
 #'
-#' @import effsize stringr stats
+#' @import effsize stringr stats lawstat
 #' @importFrom clipr write_clip
 #' @export
 wrap.t.ind  <- function(dv1, iv1, var.equal = T) {
   options(scipen=999)
 
   # Error checks
-  if(is.null(dv1)) {return(paste("Cannot find the column vector inputted to parameter dv1."))}
-  if(is.null(iv1)) {return(paste("Cannot find the column vector inputted to parameter iv1."))}
+  if(is.null(dv1)) {return(paste("Error: Cannot find the column vector inputted to parameter dv1."))}
+  if(is.null(iv1)) {return(paste("Error: Cannot find the column vector inputted to parameter iv1."))}
   if(is.null(iv1)==F) {if(is.factor(iv1)==F) {return("Error: Argument iv1 must be a factor variable.")}}
   if(is.null(dv1)==F) {if(is.numeric(dv1)==F) {return("Error: Argument dv1 must be a numeric variable.")}}
   if(is.null(var.equal)==T) {return("Error: var.equal must equal TRUE or FALSE.")}
@@ -47,17 +49,23 @@ wrap.t.ind  <- function(dv1, iv1, var.equal = T) {
   x <- as.numeric(unlist(iv1.list[[1]][2])) # DV data points associated with iv1_level1
   y <- as.numeric(unlist(iv1.list[[2]][2])) # DV data points associated with iv1_level2
 
+  # Test for equality of variance
+  output <- lawstat::levene.test(dv1,iv1,location="median")
+  if(output$p.value<=.05) {
+    levene_string <- print(paste("Note: In your data, variance differs significantly by condition, ",substr(capture.output(wrap.levene(dv1,iv1,"median")),3,nchar(capture.output(wrap.levene(dv1,iv1,"median")))),".",sep=""))
+  }
+
   # t-test results
-  a <- t.test(x, y, alternativ1e = "two.sided", mu = 0, paired = FALSE, var.equal = var.equal,conf.level = 0.95)
+  a <- t.test(x, y, alternative = "two.sided", mu = 0, paired = FALSE, var.equal = var.equal,conf.level = 0.95)
 
   # cohen's d
   b <- (cohen.d(x,y,na.rm=T)$estimate)
 
   if(var.equal==F) {
-    print("Note: These outputs do NOT assume equal variance across conditions.")
+    print("Note: The outputs below assume unequal variances across conditions.")
   }
   if(var.equal==T) {
-    print("Note: These outputs assume equal variance across conditions.")
+    print("Note: The outputs below assume equal variances across conditions.")
   }
 
   if(var.equal==F) {

@@ -16,10 +16,12 @@ wrap.planned(dv1, iv1, levels, weights)
 \item{weights}{Numeric vector containing the contrast weights. Must sum to +1 and -1.}
 }
 \description{
-Performs planned contrasts for a one-way, between-subjects ANOVA. This
-function assumes categorical (i.e., unordered) independent variables, fixed effects,
-and equal variance across conditions. Note that the confidence interval and
-Cohen's d use mean-square error to estimate variance.
+Performs planned contrasts for a one-way, between-subjects ANOVA.
+This function assumes categorical (i.e., unordered) independent variables, fixed
+effects, and equal variance across conditions. If variance differs significantly
+by condition in your data, the function also displays the results of Levene's test
+for equality of variances with centering at the median. Note that the confidence 
+interval and Cohen's d use mean-square error to estimate variance.
 }
 \examples{
 ## Contrast between two levels of the independent variable

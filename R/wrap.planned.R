@@ -1,9 +1,11 @@
 #' ANOVA (planned contrasts)
 #'
-#' @description Performs planned contrasts for a one-way, between-subjects ANOVA. This
-#' function assumes categorical (i.e., unordered) independent variables, fixed effects,
-#' and equal variance across conditions. Note that the confidence interval and
-#' Cohen's d use mean-square error to estimate variance.
+#' @description Performs planned contrasts for a one-way, between-subjects ANOVA.
+#' This function assumes categorical (i.e., unordered) independent variables, fixed
+#' effects, and equal variance across conditions. If variance differs significantly
+#' by condition in your data, the function also displays the results of Levene's test
+#' for equality of variances with centering at the median. Note that the confidence 
+#' interval and Cohen's d use mean-square error to estimate variance.
 #'
 #' @param dv1 Column vector containing the dependent variable
 #' @param iv1 Column vector containing the between-subjects independent variable
@@ -19,7 +21,7 @@
 #' wrap.planned(dv1 = bdata$DV5, iv1 = bdata$IV2, levels = c("PhotoA", "PhotoB",
 #' "PhotoC"), weights = c(-1, 0.5, 0.5))
 #'
-#' @import stringr
+#' @import stringr lawstat
 #' @importFrom clipr write_clip
 #' @export
 wrap.planned <- function(dv1,iv1,levels,weights) {
@@ -50,6 +52,12 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
 
   if(positive!=1|negative!=1) {return("Contrast weights must sum to +1 and -1.")}
 
+  # Test for equality of variance
+  output <- lawstat::levene.test(dv1,iv1,location="median")
+  if(output$p.value<=.05) {
+    levene_string <- print(paste("Note: In your data, variance differs significantly by condition (across all levels of iv1), ",substr(capture.output(wrap.levene(dv1,iv1,"median")),3,nchar(capture.output(wrap.levene(dv1,iv1,"median")))),".",sep=""))
+  }
+
   x <- options('contrasts') # store original contrasts
   options(contrasts = c('contr.sum','contr.poly'))
   rownames <- rownames(contrasts(iv1))
@@ -72,7 +80,8 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
 
   # compute the ANOVA and contrast statistics
   lm <- summary.lm(aov(dv1~iv1)); aov <- aov(dv1~iv1); dfRES <- aov$df.residual; MSRES <- summary(aov)[[1]][["Mean Sq"]][2]
-  temp <- 0; (for (i in 1:nlevels_iv1) {temp <- temp + contrasts(iv1)[i]^2/sum(iv1==rownames[i])}); SE <- sqrt(MSRES)*sqrt(temp) # temp is computing the (1/N1+1/N2) part of SE, but generalizes this for arbitrary contrast weights
+  temp <- 0; (for (i in 1:nlevels_iv1) {temp <- temp + contrasts(iv1)[i]^2/sum(iv1==rownames[i])}) # temp is computing the (1/N1+1/N2) part of SE, but generalizes this for arbitrary contrast weights
+  SE <- sqrt(MSRES)*sqrt(temp)
   means <- NULL; for (i in 1:length(levels)) {means <- c(means,mean(dv1[iv1==levels[i]],na.rm=T))}; estimate <- sum(means*weights)
   t <- estimate/SE; df <- lm$df[2]; p <- 2*pt(abs(t),dfRES,lower.tail=F)
   CIlower <- estimate-SE*qt(c(.025,.975),dfRES)[2]; CIupper <- estimate+SE*qt(c(.025,.975),dfRES)[2]

@@ -11,11 +11,13 @@ wrap.t.ind(dv1, iv1, var.equal = T)
 
 \item{iv1}{Column vector containing the independent variable}
 
-\item{var.equal}{A logical argument: If TRUE, the function assumes equal variance across conditions; if FALSE, the function does not assume equal variance}
+\item{var.equal}{A logical argument: If TRUE, the function assumes equal variances across conditions; if FALSE, the function does not assume equal variances}
 }
 \description{
 Performs independent-samples t tests. The function delegates
-the primary computations to \code{\link[stats]{t.test}}.
+the primary computations to \code{\link[stats]{t.test}}. If variance differs
+significantly by condition in your data, the function also displays the results
+of Levene's test for equality of variances with centering at the median.
 }
 \examples{
 wrap.t.ind(dv1 = bdata$DV5, iv1 = bdata$IV1)
