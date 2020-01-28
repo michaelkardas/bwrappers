@@ -63,6 +63,9 @@ wrap.cor(dv1 = bdata$DV3_T1, dv2 = bdata$DV3_T2)
 wrap.chi(dv1 = bdata$DV2) # One-way goodness-of-fit test
 wrap.chi(dv1 = bdata$DV2, iv1 = bdata$IV2) # Two-way contingency test
 
+# Levene's Test for Equality of Variances
+wrap.levene(bdata$DV5,bdata$IV2)
+
 ### Functions For Data Visualization ###
 # Bar Plots
 wrap.bar(dv1 = bdata[c(10:12)],ylim=c(0,10),ymajor=2) # 1 within-subjects factor
