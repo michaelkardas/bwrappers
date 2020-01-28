@@ -25,3 +25,6 @@ partial eta squared.
 wrap.levene(bdata$DV5,bdata$IV2)
 
 }
+\seealso{
+\code{\link[ez]{ezANOVA}}
+}

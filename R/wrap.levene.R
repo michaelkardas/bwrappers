@@ -11,10 +11,12 @@
 #' @param location Character string specifying the location from which
 #' to compute the variance within each group (\code{"median"} or \code{"mean"})
 #' 
+#' @seealso \code{\link[ez]{ezANOVA}}
+
 #' @examples
 #' wrap.levene(bdata$DV5,bdata$IV2)
 #' 
-#' @import stringr
+#' @import stringr ez effsize
 #' @importFrom clipr write_clip
 #' @export
 wrap.levene <- function(dv1,iv1,location="median") {
