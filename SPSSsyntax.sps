@@ -105,11 +105,9 @@ CROSSTABS
   /COUNT ROUND CELL.
 
 ***** Levene's Test for Equality of Variances *****.
-DATASET ACTIVATE DataSet1.
-AUTORECODE VARIABLES=IV2 
-  /INTO IV2_Cat
-  /PRINT.
+autorecode variables = IV2
+ /into IV2recode.
 
-ONEWAY DV5 BY IV2_Cat
+ONEWAY DV5 BY IV2recode
   /STATISTICS HOMOGENEITY 
   /MISSING ANALYSIS.
