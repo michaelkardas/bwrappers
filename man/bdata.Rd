@@ -4,7 +4,7 @@
 \name{bdata}
 \alias{bdata}
 \title{Sample data}
-\format{A data frame with 300 rows and 16 variables:
+\format{A data frame with 300 rows and 14 variables:
 \describe{
   \item{IV1}{The first independent variable (\code{Friend} or \code{Stranger}})
   \item{IV2}{The second independent variable (\code{PhotoA}, \code{PhotoB}, or \code{PhotoC}})
