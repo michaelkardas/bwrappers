@@ -14,7 +14,8 @@ The function will test for simple main effects of \code{iv1} separately at each 
 of \code{iv2}.}
 
 \item{adjustment}{Character string representing the method of p value adjustment
-("none", "holm", "hochberg", "hommel", "bonferroni", "BH", "BY", or "fdr").}
+(\code{"none"}, \code{"holm"}, \code{"hochberg"}, \code{"hommel"},
+\code{"bonferroni"}, \code{"BH"}, \code{"BY"}, or \code{"fdr"}).}
 }
 \description{
 Computes simple main effects for a two-way, between-subjects ANOVA.
