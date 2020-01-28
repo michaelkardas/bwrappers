@@ -4,7 +4,7 @@
 #' up to 1 within-subjects factor and up to 3 between-subjects factors. The function
 #' delegates the primary computations to \code{\link[ez]{ezANOVA}}. Note that this
 #' function assumes categorical (i.e., unordered) independent variables, fixed effects,
-#' equality of variance for between-subjects factors, and sphericity for within-subjects
+#' equality of variances for between-subjects factors, and sphericity for within-subjects
 #' factors. If variance differs significantly by condition in a fully between-subjects
 #' analysis, or if sphericity does not hold, the function additionally displays
 #' assumption checks. In the output, hp2 denotes partial eta squared.
@@ -97,7 +97,7 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
   if(is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==T) {df_temp <- as.data.frame(cbind(dv1,iv1,iv2)); colnames(df_temp)[(ncol(df_temp)-1):ncol(df_temp)] <- c(colname1,colname2)}
   if(is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {df_temp <- as.data.frame(cbind(dv1,iv1,iv2,iv3)); colnames(df_temp)[(ncol(df_temp)-2):ncol(df_temp)] <- c(colname1,colname2,colname3)}
 
-  print(paste("ASSUMPTIONS: This function assumes categorical (i.e., unordered) independent variables, fixed effects, equality of variance for between-subjects factors, and sphericity for within-subjects factors. In the output, hp2 denotes partial eta squared.",sep=""))
+  print(paste("ASSUMPTIONS: This function assumes categorical (i.e., unordered) independent variables, fixed effects, equality of variances for between-subjects factors, and sphericity for within-subjects factors. In the output, hp2 denotes partial eta squared.",sep=""))
   print(paste("Note: You are currently using type ",type," sums of squares.",sep=""))
   if(is.data.frame(dv1)==F) {
 
