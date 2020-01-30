@@ -3,8 +3,8 @@
 #' @description Performs Levene's test for equality of variances with one
 #' between-subjects factor. The function delegates the primary computations
 #' to \code{\link[ez]{ezANOVA}}. Note that this function does not use
-#' bootstrapping and does not apply corrections. In the output, hp2 denotes
-#' partial eta squared.
+#' bootstrapping and does not apply corrections. In the output, the F
+#' statistic is equivalent to Levene's W, and hp2 denotes partial eta squared.
 #' 
 #' @param dv1 Column vector containing the dependent variable
 #' @param iv1 Column vector containing the independent variable
