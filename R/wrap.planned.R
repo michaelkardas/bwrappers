@@ -23,6 +23,7 @@
 #'
 #' @import stringr lawstat
 #' @importFrom clipr write_clip
+#' @importFrom utils capture.output
 #' @export
 wrap.planned <- function(dv1,iv1,levels,weights) {
 

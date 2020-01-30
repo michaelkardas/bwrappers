@@ -25,7 +25,8 @@ Imports:
     sjstats,
     stats,
     stringr,
-    tidyr
+    tidyr,
+    utils
 Suggests:
     car,
     phia

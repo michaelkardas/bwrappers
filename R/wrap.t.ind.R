@@ -16,6 +16,7 @@
 #'
 #' @import effsize stringr stats lawstat
 #' @importFrom clipr write_clip
+#' @importFrom utils capture.output
 #' @export
 wrap.t.ind  <- function(dv1, iv1, var.equal = T) {
   options(scipen=999)
