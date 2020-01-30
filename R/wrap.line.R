@@ -294,6 +294,8 @@ wrap.line <- function(dv1,iv1=NULL,iv2=NULL,errorbar="se",ylim=NULL,ymajor=NULL,
   legend <- theme(legend.position="bottom",legend.direction="horizontal",legend.title=element_blank(),legend.text = element_text(color=color_legend_text,size=size.legend.text))
 
   ### Plot the summary tables
+  
+  # No between-subjects IVs
   if(is.null(iv1)==T) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
@@ -301,6 +303,7 @@ wrap.line <- function(dv1,iv1=NULL,iv2=NULL,errorbar="se",ylim=NULL,ymajor=NULL,
       geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",linetype=1)+ geom_line(aes(color="black"),size=2,linetype=1,color="black")
   }
 
+  # 1 between-subjects IV
   if((is.null(iv1)==F&is.null(iv2)==T)) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[5]]-1)}
@@ -308,6 +311,7 @@ wrap.line <- function(dv1,iv1=NULL,iv2=NULL,errorbar="se",ylim=NULL,ymajor=NULL,
       geom_errorbar(aes(ymin=summary[[3]]-summary[[4]]*errorbar_multiplier,ymax=summary[[3]]+summary[[4]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",linetype=1)+theme(legend.key=element_blank())+ geom_line(aes(color=summary[[2]]),size=2,linetype=1)
   }
 
+  # 2 between-subjects IVs
   if(is.null(iv1)==F&is.null(iv2)==F) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[6]]-1)}

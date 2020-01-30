@@ -518,9 +518,14 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
     fill <- scale_fill_grey(labels=paste(levels(factor(summary[[2]]))))
   }
 
-  if ((is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==F)|is.data.frame(dv1)==F&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {
+  if ((is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==F)) {
     legend_column <- 2
     fill <- scale_fill_grey(labels=paste(levels(factor(summary[[2]]))))
+  }
+  
+  if (is.data.frame(dv1)==F&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {
+    legend_column <- 3
+    fill <- scale_fill_grey(labels=paste(levels(factor(summary[[3]]))))
   }
 
   if (is.null(legend_column)==T) {
@@ -533,6 +538,8 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
   SummaryColumns <- ncol(summary)
 
   ### Plot summary table
+  
+  # Between-subjects DV; no between-subjects IVs
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==T) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
@@ -541,6 +548,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
     plot <- eval(parse(text=paste("ggplot(summary,aes(x=",paste("`",as.character(summary[1,1]),"`",sep=""),",y=summary[[2]])) + coord_cartesian(ylim=ylim) + labs(title=title) + theme(plot.title=element_text(face=",shQuote("bold"),",color= ",shQuote("black"),",size=size.title))+theme(plot.title = element_text(color= ",shQuote("black"),",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=element_blank())+labs(y=ylab)+labs(x=xlab)+geom_bar(size=1,stat=",shQuote("identity"),",color=",shQuote("black"),",position=position_dodge(width=0.75),width=0.75)  +fill+legend+theme(plot.background = element_rect(fill = ",shQuote("white"),", colour = ",shQuote("white"),"))+ theme(panel.grid.major.y = element_line(colour=",shQuote("black"),", size=1),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= ",shQuote("black"),"))+scale_y_continuous+ theme(strip.background = element_rect(fill=",shQuote("white"),"))+theme(strip.text.x = element_text(size = size.panel.title,face=",shQuote("bold"),",color=",shQuote("black"),"))+theme(panel.background = element_rect(colour = ",shQuote("black"),", fill = ",shQuote("white"),", size = 1),panel.border = element_rect(colour = ",shQuote("black"),", fill=NA, size=1),axis.line = element_line(colour = ",shQuote("black"),",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour=",shQuote("gray21"),",position=position_dodge(.75))")))
   }
 
+  # Between-subjects DV; 1 between-subjects IV
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==F&is.null(iv2)==T) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
@@ -548,6 +556,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
       geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
+  # Between-subjects DV; 2 between-subjects IVs
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==T) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[5]]-1)}
@@ -555,6 +564,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
       geom_errorbar(aes(ymin=summary[[3]]-summary[[4]]*errorbar_multiplier,ymax=summary[[3]]+summary[[4]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
+  # Between-subjects DV; 3 between-subjects IVs
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[6]]-1)}
@@ -562,6 +572,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
       geom_errorbar(aes(ymin=summary[[4]]-summary[[5]]*errorbar_multiplier,ymax=summary[[4]]+summary[[5]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
+  # Within-subjects DV; no between-subjects IVs
   if(is.data.frame(dv1)==T&is.null(iv1)==T) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
@@ -569,6 +580,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
       geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
+  # Within-subjects DV; 1 between-subjects IV
   if(is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==T) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[5]]-1)}
@@ -576,6 +588,7 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
       geom_errorbar(aes(ymin=summary[[3]]-summary[[4]]*errorbar_multiplier,ymax=summary[[3]]+summary[[4]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
   }
 
+  # Within-subjects DV; 2 between-subjects IVs
   if(is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==F) {
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[6]]-1)}
