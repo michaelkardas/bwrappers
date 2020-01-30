@@ -2,7 +2,7 @@
 % Please edit documentation in R/wrap.levene.R
 \name{wrap.levene}
 \alias{wrap.levene}
-\title{Levene's Test for Equality of Variances}
+\title{Levene's test for equality of variances}
 \usage{
 wrap.levene(dv1, iv1, location = "median")
 }
@@ -18,11 +18,11 @@ to compute the variance within each group (\code{"median"} or \code{"mean"})}
 Performs Levene's test for equality of variances with one
 between-subjects factor. The function delegates the primary computations
 to \code{\link[ez]{ezANOVA}}. Note that this function does not use
-bootstrapping and does not apply corrections. In the output, hp2 denotes
-partial eta squared.
+bootstrapping and does not apply corrections. In the output, the F
+statistic is equivalent to Levene's W, and hp2 denotes partial eta squared.
 }
 \examples{
-wrap.levene(bdata$DV5,bdata$IV2)
+wrap.levene(dv1 = bdata$DV5, iv1 = bdata$IV2, location = "median")
 
 }
 \seealso{

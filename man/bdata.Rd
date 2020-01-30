@@ -6,11 +6,11 @@
 \title{Sample data}
 \format{A data frame with 300 rows and 14 variables:
 \describe{
-  \item{IV1}{The first independent variable (\code{Friend} or \code{Stranger}})
-  \item{IV2}{The second independent variable (\code{PhotoA}, \code{PhotoB}, or \code{PhotoC}})
-  \item{IV3}{The third independent variable (\code{Negative} or \code{Positive}})
+  \item{IV1}{The first independent variable (\code{Friend} or \code{Stranger})}
+  \item{IV2}{The second independent variable (\code{PhotoA}, \code{PhotoB}, or \code{PhotoC})}
+  \item{IV3}{The third independent variable (\code{Negative} or \code{Positive})}
   \item{DV1}{A continuous dependent variable, ranging from 0 to 10}
-  \item{DV2}{A categorical dependent variable (\code{Yes} or \code{No}})
+  \item{DV2}{A categorical dependent variable (\code{Yes} or \code{No})}
   \item{DV3_T1}{A discrete dependent variable, ranging from 0 to 10, measured at Time 1}
   \item{DV4_T1}{A discrete dependent variable, ranging from 0 to 10, measured at Time 1}
   \item{DV3_T2}{A discrete dependent variable, ranging from 0 to 10, measured at Time 2}
