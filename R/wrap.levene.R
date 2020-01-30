@@ -1,4 +1,4 @@
-#' Levene's Test for Equality of Variances
+#' Levene's test for equality of variances
 #' 
 #' @description Performs Levene's test for equality of variances with one
 #' between-subjects factor. The function delegates the primary computations

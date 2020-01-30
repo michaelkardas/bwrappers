@@ -1,4 +1,4 @@
-#' T Test (Independent Samples)
+#' T test (independent samples)
 #'
 #' @description Performs independent-samples t tests. The function delegates
 #' the primary computations to \code{\link[stats]{t.test}}. If variance differs
