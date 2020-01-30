@@ -78,7 +78,7 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
   if(contrasts(iv1)[1,1]==0&contrasts(iv1)[2,1]==0) {temp1 <- which(contrasts(iv1)[,1]>0)[1]; temp2 <- which(contrasts(iv1)[temp1,]!=0)[2]; contrasts(iv1)[1,temp2] <- 1}
   for (i in 1:(nrow(contrasts(iv1))-1)) {for (j in (i+1):nrow(contrasts(iv1))) {if(contrasts(iv1)[i]==contrasts(iv1)[j]) {contrasts(iv1)[j,ncol(contrasts(iv1))] <- contrasts(iv1)[j,ncol(contrasts(iv1))]+1}}}
   if((length(iv1)-nlevels(iv1))!=aov(dv1~iv1)$df.residual) {for (i in 1:nrow(contrasts(iv1))) {contrasts(iv1)[i,ncol(contrasts(iv1))] <- contrasts(iv1)[i,ncol(contrasts(iv1))]+runif(1)}}
-  if(sum(contrasts(iv1)[1:nlevels_iv1])!=0) {return("Error: Weights in the contrast matrix do not sum to 0. Are you missing values in dv1 or iv1?")}
+  if(abs(sum(contrasts(iv1)[1:nlevels_iv1]))>10^-8) {return("Error: Weights in the contrast matrix do not sum to 0. Are you missing values in dv1 or iv1?")}
 
   # compute the ANOVA and contrast statistics
   lm <- summary.lm(aov(dv1~iv1)); aov <- aov(dv1~iv1); dfRES <- aov$df.residual; MSRES <- summary(aov)[[1]][["Mean Sq"]][2]
