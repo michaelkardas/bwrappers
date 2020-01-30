@@ -130,10 +130,12 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
 
       ez <- ezANOVA(data=df,dv=dv1,wid=userAnovaIDNum0,between=.(iv1,iv2,iv3),detailed=T,type=type)
       Anova <- ez$ANOVA
-      levene <- ez$`Levene's Test for Homogeneity of Variance`
-      if(levene$p <= .05 & levene$p >= .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p = ",wrap.rd(levene$p,3),", hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
-      if(levene$p < .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p < .001, hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
-      if(levene$p > .05) {levene_string <- ""}
+      levene_string <- ""
+      if(is.null(ez$`Levene's Test for Homogeneity of Variance`)==F) {
+        levene <- ez$`Levene's Test for Homogeneity of Variance`
+        if(levene$p <= .05 & levene$p >= .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p = ",wrap.rd(levene$p,3),", hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+        if(levene$p < .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p < .001, hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+      }
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
@@ -187,10 +189,12 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
 
       ez <- ezANOVA(data=df,dv=dv1,wid=userAnovaIDNum0,between=.(iv1,iv2),detailed=T,type=type)
       Anova <- ez$ANOVA
-      levene <- ez$`Levene's Test for Homogeneity of Variance`
-      if(levene$p <= .05 & levene$p >= .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p = ",wrap.rd(levene$p,3),", hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
-      if(levene$p < .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p < .001, hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
-      if(levene$p > .05) {levene_string <- ""}
+      levene_string <- ""
+      if(is.null(ez$`Levene's Test for Homogeneity of Variance`)==F) {
+        levene <- ez$`Levene's Test for Homogeneity of Variance`
+        if(levene$p <= .05 & levene$p >= .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p = ",wrap.rd(levene$p,3),", hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+        if(levene$p < .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p < .001, hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+      }
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
@@ -233,10 +237,13 @@ wrap.anova <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,type=3) {
 
       ez <- ezANOVA(data=df,dv=dv1,wid=userAnovaIDNum0,between=iv1,detailed=T,type=type)
       Anova <- ez$ANOVA
-      levene <- ez$`Levene's Test for Homogeneity of Variance`
-      if(levene$p <= .05 & levene$p >= .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p = ",wrap.rd(levene$p,3),", hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
-      if(levene$p < .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p < .001, hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
-      if(levene$p > .05) {levene_string <- ""}
+      
+      levene_string <- ""
+      if(is.null(ez$`Levene's Test for Homogeneity of Variance`)==F) {
+        levene <- ez$`Levene's Test for Homogeneity of Variance`
+        if(levene$p <= .05 & levene$p >= .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p = ",wrap.rd(levene$p,3),", hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+        if(levene$p < .001) {levene_string <- paste("\n","\n","Note: Variance differs significantly by condition, F(",levene$DFn,", ",levene$DFd,") = ",wrap.rd0(levene$F,2),", p < .001, hp2 = ",wrap.rd(levene$SSn/(levene$SSn+levene$SSd),2),".",sep="")}
+      }
       if(Anova$Effect[1]!="(Intercept)") {Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)}
       options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
 
