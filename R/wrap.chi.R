@@ -6,7 +6,7 @@
 #' @param dv1 Column vector containing the categorical dependent variable
 #' @param iv1 Column vector containing the categorical independent variable (contingency tests, only)
 #' @param p A vector of probabilities representing expected cell frequencies (goodness-of-fit tests, only). By default, the function assumes equal expected cell frequencies for all levels of the dependent variable.
-#' @param correct A logical argument: If FALSE, the function does not apply Yates's correction for 2×2 contingency tables; if TRUE, the function applies Yates's correction for 2×2 contingency tables.
+#' @param correct A logical argument: If FALSE, the function does not apply Yates's correction for 2x2 contingency tables; if TRUE, the function applies Yates's correction for 2x2 contingency tables.
 #'
 #' @seealso \code{\link[stats]{chisq.test}}
 #'
@@ -20,7 +20,7 @@
 #' @import stringr stats
 #' @importFrom clipr write_clip
 #' @export
-wrap.chi <- function(dv1,iv1=NULL,p=rep(1/nlevels(factor(dv1)),nlevels(factor(dv1))),correct=F) {
+wrap.chi <- function(dv1,iv1=NULL,p=rep(1/nlevels(dv1),nlevels(dv1)),correct=F) {
   options(scipen=999)
 
   # Error checks

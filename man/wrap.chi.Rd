@@ -4,12 +4,7 @@
 \alias{wrap.chi}
 \title{Chi-square tests}
 \usage{
-wrap.chi(
-  dv1,
-  iv1 = NULL,
-  p = rep(1/nlevels(factor(dv1)), nlevels(factor(dv1))),
-  correct = F
-)
+wrap.chi(dv1, iv1 = NULL, p = rep(1/nlevels(dv1), nlevels(dv1)), correct = F)
 }
 \arguments{
 \item{dv1}{Column vector containing the categorical dependent variable}
@@ -18,7 +13,7 @@ wrap.chi(
 
 \item{p}{A vector of probabilities representing expected cell frequencies (goodness-of-fit tests, only). By default, the function assumes equal expected cell frequencies for all levels of the dependent variable.}
 
-\item{correct}{A logical argument: If FALSE, the function does not apply Yates's correction for 2×2 contingency tables; if TRUE, the function applies Yates's correction for 2×2 contingency tables.}
+\item{correct}{A logical argument: If FALSE, the function does not apply Yates's correction for 2x2 contingency tables; if TRUE, the function applies Yates's correction for 2x2 contingency tables.}
 }
 \description{
 Performs one-way goodness-of-fit and two-way contingency tests. The
