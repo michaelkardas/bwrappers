@@ -14,7 +14,7 @@
 #' @seealso \code{\link[ez]{ezANOVA}}
 
 #' @examples
-#' wrap.levene(bdata$DV5,bdata$IV2)
+#' wrap.levene(dv1 = bdata$DV5, iv1 = bdata$IV2, location = "median")
 #' 
 #' @import stringr ez effsize
 #' @importFrom clipr write_clip
