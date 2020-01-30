@@ -22,6 +22,14 @@
 wrap.levene <- function(dv1,iv1,location="median") {
   options(scipen=999)
   
+  # Prevent errors writing to clipboard when this function is called by
+  # wrap.t.ind or wrap.planned
+  write_clipboard <- T
+    if(location=="median_do_not_write_clipboard") {
+      location="median"
+      write_clipboard <- F
+    }
+  
     # Error checks
     if(is.null(dv1)) {return(paste("Error: Cannot find the column vector inputted to parameter dv1."))}
     if(is.null(iv1)) {return(paste("Error: Cannot find the column vector inputted to parameter iv1."))}
@@ -52,10 +60,13 @@ wrap.levene <- function(dv1,iv1,location="median") {
       Anova <- rbind(NA,Anova); rownames(Anova) <- 1:nrow(Anova)
     }
     options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
-    write_clip(allow_non_interactive = TRUE, content = 
-      paste("# F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
-          sep="")
-    )
+    
+    if(write_clipboard == T) {
+      write_clip(allow_non_interactive = TRUE, content = 
+                   paste("# F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
+                         sep="")
+      )
+    }
     return(
       cat("# F(",Anova$DFn[2],", ",Anova$DFd[2],") = ",wrap.rd0(Anova$F[2],2),", p",if (as.numeric(Anova$p[2]) < .001) {" < .001"},if (as.numeric(Anova$p[2]) >= .001) {" = "},if (as.numeric(Anova$p[2]) >= .001) {wrap.rd(Anova$p[2],3)},", hp2 = ",wrap.rd(Anova$SSn[2]/(Anova$SSn[2]+Anova$SSd[2]),2),
           sep="")
