@@ -54,9 +54,10 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
 
   # Test for equality of variance
   output <- lawstat::levene.test(dv1,iv1,location="median")
+  levene_string <- ""
   if(output$p.value<=.05) {
     levene_output <- capture.output(wrap.levene(dv1,iv1,"median_do_not_write_clipboard"))
-    levene_string <- print(paste("Note: In your data, variance differs significantly by condition (across all levels of iv1), ",substr(levene_output,3,nchar(levene_output)),".",sep=""))
+    levene_string <- paste("Note: In your data, variance differs significantly by condition (across all levels of iv1), ",substr(levene_output,3,nchar(levene_output)),".",sep="")
   }
 
   x <- options('contrasts') # store original contrasts
@@ -91,6 +92,7 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
   if((length(iv1)-nlevels(iv1))!=dfRES) {warning("WARNING: Degrees of freedom should, but does not equal the length of iv1 minus the number of levels in iv1. Are you missing data in either iv1 or dv1?")}
 
   print("ASSUMPTIONS: The function assumes categorical (i.e., unordered) independent variables, fixed effects, and equality of variances across conditions. Note that the confidence interval and Cohen's d use mean-square error to estimate variance.")
+  if(nchar(levene_string)>0) {print(levene_string)}
   if (p >= .001) {
     write_clip(allow_non_interactive = TRUE, content = paste("# t(",df,") = ",wrap.rd0(t,2),", p = ",wrap.rd(p,3),", 95% CIdifference = [",wrap.rd0(CIlower,2),", ",wrap.rd0(CIupper,2),"], d = ",wrap.rd0(d,2),sep=""))
     return(cat("\n","# t(",df,") = ",wrap.rd0(t,2),", p = ",wrap.rd(p,3),", 95% CIdifference = [",wrap.rd0(CIlower,2),", ",wrap.rd0(CIupper,2),"], d = ",wrap.rd0(d,2),sep=""))
