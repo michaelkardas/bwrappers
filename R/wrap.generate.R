@@ -94,7 +94,7 @@ wrap.generate <- function(df,string1,string2,operation, newString = operation) {
     print(paste("Note: Generated ",newcolumns," columns.",sep=""))
   }
   if(operation=="difference") {
-    if(overwritten>0) {print(paste("Note: The function is overwriting",overwritten," column/s that already existed in the data frame.",sep=""))}
+    if(overwritten>0) {print(paste("Note: The function is overwriting ",overwritten," column/s that already existed in the data frame.",sep=""))}
     if(newcolumns>0) {print(paste("Note: Generated ",newcolumns," column/s. Computed differences as ",string1," minus ",string2,".",sep=""))}
     if(newcolumns==0) {print(paste("Note: Generated ",newcolumns," column/s.",sep=""))}
   }
