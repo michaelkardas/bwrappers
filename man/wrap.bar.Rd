@@ -37,7 +37,7 @@ multiple column vectors containing the within-subjects dependent variables}
 
 \item{errorbar}{Character string specifying the length of the error bars:
 \code{"se"} displays +/-1 standard error; \code{"ci"} displays 95\% confidence intervals
-without p-value adjustment}
+without p-value adjustment; \code{"none"} omits error bars}
 
 \item{ylim}{Numeric vector containing lower and upper y-axis limits}
 
