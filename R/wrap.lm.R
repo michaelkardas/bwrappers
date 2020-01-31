@@ -2,14 +2,15 @@
 #'
 #' @description Performs linear regression analyses. The function delegates
 #' the primary computations to \code{\link[stats]{lm}} and
-#' \code{\link[sjstats]{std_beta}}. In the output, R^2 is not adjusted.
+#' \code{\link[betas]{betas.lm}}. Note that confidence intervals are computed
+#' using a central t distribution. In the output, R^2 is not adjusted.
 #'
 #' @param formula The linear model
 #' @param standardized A logical argument: if \code{FALSE}, the function
 #' returns unstandardized coefficients; if \code{TRUE}, the function returns
 #' standardized coefficients
 #'
-#' @seealso \code{\link[stats]{lm}}, \code{\link[sjstats]{std_beta}}
+#' @seealso \code{\link[stats]{lm}}, \code{\link[betas]{betas.lm}}
 #'
 #' @examples
 #' ## Linear regression with unstandardized coefficients
@@ -19,7 +20,7 @@
 #' wrap.lm(formula = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
 #' @import stringr stats
 #' @importFrom clipr write_clip
-#' @importFrom sjstats std_beta
+#' @importFrom betas betas.lm
 #' @export
 wrap.lm <- function(formula,standardized=FALSE) {
 
@@ -27,15 +28,16 @@ wrap.lm <- function(formula,standardized=FALSE) {
   
   # Error checks
   if(standardized!=FALSE&standardized!=TRUE) {return("Argument standardized must be equal to FALSE or TRUE.")}
-  print(paste("Note: Your contrast options are currently set to unordered = ",options('contrasts')$contrasts[[1]],", ordered = ",options('contrasts')$contrasts[[2]],".",sep=""))
   data <- lm(formula)$model
   if(nrow(data)!=rownames(data)[nrow(data)]) {print("Note: Your inputs include one or more NA entries. The function will ignore the rows containing these entries.")}
   summary <- summary(lm(formula))
   confint_unstandard <- confint(lm(formula))
-  summary_standard <- std_beta(lm(formula))
+  summary_standard <- betas.lm(lm(formula))
   if(nrow(summary$coefficients)==0) {return("Error: You did not enter a model.")}
-  if(length(summary_standard$term)==0) {return("Error: You did not enter a model.")}
-
+  if(nrow(summary$coefficients)==1&rownames(summary$coefficients)[1]=="(Intercept)") {return("Error: You did not enter a model.")}
+  print(paste("Note: Your contrast options are currently set to unordered = ",options('contrasts')$contrasts[[1]],", ordered = ",options('contrasts')$contrasts[[2]],".",sep=""))
+  print(paste("Note: Confidence intervals are computed using a central t distribution. In the output, R^2 is not adjusted."))
+  
   df_name <- ""
   if(nrow(summary$coefficients)>1) {
     if(regexpr("\\$",rownames(summary$coefficients)[2])>0) {
@@ -62,7 +64,7 @@ wrap.lm <- function(formula,standardized=FALSE) {
     }
     temp_clip <- paste("\n",clip,sep="")
   }
-
+  
   # Unstandardized regression coefficients
   if(standardized==F) {
     for (i in 1:(nrow(summary$coefficients))) {
@@ -81,16 +83,16 @@ wrap.lm <- function(formula,standardized=FALSE) {
       }
     )
   }
-  
+
   # Standardized regression coefficients
   if(standardized==T) {
     if(rownames(summary(lm(formula))$coefficients)[1]=="(Intercept)") {
       clip <- paste(clip,"# (Intercept): Beta = 0.00","\n",sep="")
     }
-    for (i in 1:(length(summary_standard$term))) {
-      row <- which(rownames(summary$coefficients)==summary_standard$term[i])
+    for (i in 1:(nrow(summary_standard))) {
+      row <- which(rownames(summary$coefficients)==rownames(summary_standard)[i])
       clip <- paste(clip,
-                    "# ",gsub(df_name,"",gsub(":"," x ",summary_standard$term[i])),": Beta = ",wrap.rd0(summary_standard$std.estimate[i],2),", SE = ",wrap.rd0(summary_standard$std.error[i],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[row,3],2),", p",if (as.numeric(summary$coefficients[row,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[row,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[row,4]) >= .001) {wrap.rd(summary$coefficients[row,4],3)},", 95% CI = [",wrap.rd0(summary_standard$conf.low[i],2),", ",wrap.rd0(summary_standard$conf.high[i],2),"]","\n",
+                    "# ",gsub(df_name,"",gsub(":"," x ",rownames(summary_standard)[i])),": Beta = ",wrap.rd0(summary_standard$beta[i],2),", SE = ",wrap.rd0(summary_standard$se.beta[i],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[row,3],2),", p",if (as.numeric(summary$coefficients[row,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[row,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[row,4]) >= .001) {wrap.rd(summary$coefficients[row,4],3)},", 95% CI = [",wrap.rd0(summary_standard$beta[i]-summary_standard$se.beta[i]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),", ",wrap.rd0(summary_standard$beta[i]+summary_standard$se.beta[i]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),"]","\n",
                     sep="")
     }
     clip <- paste(substr(clip,1,nchar(clip)-1))
@@ -99,10 +101,10 @@ wrap.lm <- function(formula,standardized=FALSE) {
       temp_clip <- paste(temp_clip,"# (Intercept): Beta = 0.00","\n",sep="")
     }
     return(
-      for (i in 1:(length(summary_standard$term))) {
-        row <- which(rownames(summary$coefficients)==summary_standard$term[i])
+      for (i in 1:(nrow(summary_standard))) {
+        row <- which(rownames(summary$coefficients)==rownames(summary_standard)[i])
         cat(if(i==1) {temp_clip},
-            "# ",gsub(df_name,"",gsub(":"," x ",summary_standard$term[i])),": Beta = ",wrap.rd0(summary_standard$std.estimate[i],2),", SE = ",wrap.rd0(summary_standard$std.error[i],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[row,3],2),", p",if (as.numeric(summary$coefficients[row,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[row,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[row,4]) >= .001) {wrap.rd(summary$coefficients[row,4],3)},", 95% CI = [",wrap.rd0(summary_standard$conf.low[i],2),", ",wrap.rd0(summary_standard$conf.high[i],2),"]","\n",
+            "# ",gsub(df_name,"",gsub(":"," x ",rownames(summary_standard)[i])),": Beta = ",wrap.rd0(summary_standard$beta[i],2),", SE = ",wrap.rd0(summary_standard$se.beta[i],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[row,3],2),", p",if (as.numeric(summary$coefficients[row,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[row,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[row,4]) >= .001) {wrap.rd(summary$coefficients[row,4],3)},", 95% CI = [",wrap.rd0(summary_standard$beta[i]-summary_standard$se.beta[i]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),", ",wrap.rd0(summary_standard$beta[i]+summary_standard$se.beta[i]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),"]","\n",
             sep="")
         
       }
