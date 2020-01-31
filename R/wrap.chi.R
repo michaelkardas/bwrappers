@@ -30,6 +30,7 @@ wrap.chi <- function(dv1,iv1=NULL,p=rep(1/nlevels(dv1),nlevels(dv1)),correct=F) 
   if(is.null(iv1)==F) {
     if(is.factor(iv1)==F) {return("Must enter a factor variable for iv1.")}
   }
+  if(is.null(p)==F) {if(is.numeric(p)==F) {return("Error: Argument p must be numeric.")}}
   if(is.null(iv1)==T) {if(any(is.na(dv1))) {dv1 <- dv1[complete.cases(dv1)]; print("Note: Your inputs include one or more NA entries. The function will ignore the rows containing these entries.")}}
   if(is.null(iv1)==F) {
     complete.cases <- complete.cases(cbind(dv1,iv1))
