@@ -13,8 +13,10 @@ names}
 \description{
 Searches the data frame for columns with identical names and then
 merges them into one column, preserving only the single entry within each row
-that is not blank or \code{NA}. The function outputs the revised data frame directly
-to the Global Environment.
+that is not blank or \code{NA}. If any row contains entries in two or more
+identically named columns, the function returns an error and does not overwrite
+data. After merging columns, the function assigns the revised data frame
+directly to the Global Environment.
 }
 \examples{
 wrap.merge(df = bdata)

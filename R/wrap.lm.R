@@ -2,7 +2,7 @@
 #'
 #' @description Performs linear regression analyses. The function delegates
 #' the primary computations to \code{\link[stats]{lm}} and \code{\link[lm.beta]{lm.beta}}.
-#' Note that confidence intervals are computed using a central t distribution.
+#' Note that the confidence intervals are computed using a central t distribution.
 #' In the output, R^2 is not adjusted.
 #'
 #' @param formula The linear model
