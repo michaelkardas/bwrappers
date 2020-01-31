@@ -20,6 +20,7 @@ Imports:
     gsubfn,
     Hmisc,
     lawstat,
+    lm.beta,
     psychometric,
     scales,
     stats,

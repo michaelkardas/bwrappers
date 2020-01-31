@@ -1,16 +1,16 @@
 #' Linear regression
 #'
 #' @description Performs linear regression analyses. The function delegates
-#' the primary computations to \code{\link[stats]{lm}}. Note that confidence
-#' intervals are computed using a central t distribution. In the output, R^2
-#' is not adjusted.
+#' the primary computations to \code{\link[stats]{lm}} and \code{\link[lm.beta]{lm.beta}}.
+#' Note that confidence intervals are computed using a central t distribution.
+#' In the output, R^2 is not adjusted.
 #'
 #' @param formula The linear model
 #' @param standardized A logical argument: if \code{FALSE}, the function
 #' returns unstandardized coefficients; if \code{TRUE}, the function returns
 #' standardized coefficients
 #'
-#' @seealso \code{\link[stats]{lm}}
+#' @seealso \code{\link[stats]{lm}}, \code{\link[lm.beta]{lm.beta}}
 #'
 #' @examples
 #' ## Linear regression with unstandardized coefficients
@@ -18,7 +18,7 @@
 #'
 #' # Linear regression with standardized coefficients
 #' wrap.lm(formula = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
-#' @import stringr stats
+#' @import stringr stats lm.beta
 #' @importFrom clipr write_clip
 #' @export
 wrap.lm <- function(formula,standardized=FALSE) {
@@ -67,7 +67,6 @@ wrap.lm <- function(formula,standardized=FALSE) {
   # Unstandardized regression coefficients
   if(standardized==F) {
     
-    # Output results
     for (i in 1:(nrow(summary$coefficients))) {
       clip <- paste(clip,
                     "# ",gsub(df_name,"",gsub(":"," x ",rownames(summary$coefficients)[i])),": b = ",wrap.rd0(summary$coefficients[i,1],2),", SE = ",wrap.rd0(summary$coefficients[i,2],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[i,3],2),", p",if (as.numeric(summary$coefficients[i,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[i,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[i,4]) >= .001) {wrap.rd(summary$coefficients[i,4],3)},", 95% CI = [",wrap.rd0(confint_unstandard[i,1],2),", ",wrap.rd0(confint_unstandard[i,2]),"]","\n",
@@ -87,62 +86,35 @@ wrap.lm <- function(formula,standardized=FALSE) {
 
   # Standardized regression coefficients
   if(standardized==T) {
-    
-    # Compute standardized coefficients and SE. Note that
-    # this code is modeled after betas.lm from package "betas"
-    # but corrects an error that (currently) arises in that
-    # package when the user fits a model without an intercept
-    if(names(model$coefficients)[1]=="(Intercept)") {
-      b <- model$coefficients[-1]
-    }
-    
-    if(names(model$coefficients)[1]!="(Intercept)") {
-      b <- model$coefficients
-    }
-    
-    if(rownames(summary(model)$coefficients)[1]=="(Intercept)") {
-      se <- summary(model)$coefficients[-1, 2]
-    }
-    
-    if(rownames(summary(model)$coefficients)[1]!="(Intercept)") {
-      se <- summary(model)$coefficients[, 2]
-    }
-    
-    X <- qr.X(model$qr)
-    
-    if(names(model$coefficients)[1]=="(Intercept)") {
-      sdx <- apply(X, 2, sd)[-1]
-    }
-    
-    if(names(model$coefficients)[1]!="(Intercept)") {
-      sdx <- apply(X, 2, sd)
-    }
-    
-    sdy <- sd(model$model[, 1])
-    beta <- b * sdx/sdy
-    se.b <- se * sdx/sdy
-    summary_standard <- data.frame(beta = beta, se.beta = se.b)
+    summary_standard <- summary(lm.beta(model))
 
-    # Output results
     if(rownames(summary(lm(formula))$coefficients)[1]=="(Intercept)") {
       clip <- paste(clip,"# (Intercept): Beta = 0.00","\n",sep="")
     }
-    for (i in 1:(nrow(summary_standard))) {
-      row <- which(rownames(summary$coefficients)==rownames(summary_standard)[i])
-      clip <- paste(clip,
-                    "# ",gsub(df_name,"",gsub(":"," x ",rownames(summary_standard)[i])),": Beta = ",wrap.rd0(summary_standard$beta[i],2),", SE = ",wrap.rd0(summary_standard$se.beta[i],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[row,3],2),", p",if (as.numeric(summary$coefficients[row,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[row,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[row,4]) >= .001) {wrap.rd(summary$coefficients[row,4],3)},", 95% CI = [",wrap.rd0(summary_standard$beta[i]-summary_standard$se.beta[i]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),", ",wrap.rd0(summary_standard$beta[i]+summary_standard$se.beta[i]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),"]","\n",
-                    sep="")
+    for (i in 1:(nrow(summary_standard$coefficients))) {
+      if(rownames(summary_standard$coefficients)[i]!="(Intercept)") {
+        row <- which(rownames(summary$coefficients)==rownames(summary_standard$coefficients)[i])
+        clip <- paste(clip,
+                      "# ",gsub(df_name,"",gsub(":"," x ",rownames(summary_standard$coefficients)[i])),": Beta = ",wrap.rd0(summary_standard$coefficients[i,2],2),", SE = ",wrap.rd0(summary_standard$coefficients[i,3]/summary_standard$coefficients[i,1]*summary_standard$coefficients[i,2],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[row,3],2),", p",if (as.numeric(summary$coefficients[row,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[row,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[row,4]) >= .001) {wrap.rd(summary$coefficients[row,4],3)},", 95% CI = [",wrap.rd0(summary_standard$coefficients[i,2]-summary_standard$coefficients[i,3]/summary_standard$coefficients[i,1]*summary_standard$coefficients[i,2]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),", ",wrap.rd0(summary_standard$coefficients[i,2]+summary_standard$coefficients[i,3]/summary_standard$coefficients[i,1]*summary_standard$coefficients[i,2]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),"]","\n",
+                      sep="")
+      }
     }
     clip <- paste(substr(clip,1,nchar(clip)-1))
     write_clip(allow_non_interactive = TRUE, content = clip)
     if(rownames(summary(lm(formula))$coefficients)[1]=="(Intercept)") {
       temp_clip <- paste(temp_clip,"# (Intercept): Beta = 0.00","\n",sep="")
     }
+    
+    start <- 1
+    if(rownames(summary_standard$coefficients)[1]=="(Intercept)") {
+      start <- 2
+    }
+
     return(
-      for (i in 1:(nrow(summary_standard))) {
-        row <- which(rownames(summary$coefficients)==rownames(summary_standard)[i])
-        cat(if(i==1) {temp_clip},
-            "# ",gsub(df_name,"",gsub(":"," x ",rownames(summary_standard)[i])),": Beta = ",wrap.rd0(summary_standard$beta[i],2),", SE = ",wrap.rd0(summary_standard$se.beta[i],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[row,3],2),", p",if (as.numeric(summary$coefficients[row,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[row,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[row,4]) >= .001) {wrap.rd(summary$coefficients[row,4],3)},", 95% CI = [",wrap.rd0(summary_standard$beta[i]-summary_standard$se.beta[i]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),", ",wrap.rd0(summary_standard$beta[i]+summary_standard$se.beta[i]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),"]","\n",
+      for (i in start:(nrow(summary_standard$coefficients))) {
+        row <- which(rownames(summary$coefficients)==rownames(summary_standard$coefficients)[i])
+        cat(if(i==start) {temp_clip},
+            "# ",gsub(df_name,"",gsub(":"," x ",rownames(summary_standard$coefficients)[i])),": Beta = ",wrap.rd0(summary_standard$coefficients[i,2],2),", SE = ",wrap.rd0(summary_standard$coefficients[i,3]/summary_standard$coefficients[i,1]*summary_standard$coefficients[i,2],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[row,3],2),", p",if (as.numeric(summary$coefficients[row,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[row,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[row,4]) >= .001) {wrap.rd(summary$coefficients[row,4],3)},", 95% CI = [",wrap.rd0(summary_standard$coefficients[i,2]-summary_standard$coefficients[i,3]/summary_standard$coefficients[i,1]*summary_standard$coefficients[i,2]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),", ",wrap.rd0(summary_standard$coefficients[i,2]+summary_standard$coefficients[i,3]/summary_standard$coefficients[i,1]*summary_standard$coefficients[i,2]*qt(c(.025,.975),nrow(data)-nrow(summary$coefficients))[2],2),"]","\n",
             sep="")
         
       }
