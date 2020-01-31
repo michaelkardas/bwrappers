@@ -4,7 +4,6 @@
 #' and prints descriptive statistics in a summary table. The function creates plots
 #' for up to 3 factors total, including 0-1 within-subjects factors and 0-3 between-
 #' subjects factors. The function delegates the primary computations to \code{\link[ggplot2]{ggplot}}.
-#' Error bars are +/-1 SE.
 #'
 #' @param dv1 Column vector containing the between-subjects dependent variable OR
 #' multiple column vectors containing the within-subjects dependent variables

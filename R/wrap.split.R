@@ -1,7 +1,7 @@
 #' Split a data frame
 #'
 #' @description Splits a data frame across all combinations of 1-3 independent
-#' variables and then assigns the new data frames to the Global Environment.
+#' variables and then assigns the new data frames directly to the Global Environment.
 #' The function delegates the primary computations to \code{\link[base]{split}}.
 #'
 #' @param df The data frame that you intend to split

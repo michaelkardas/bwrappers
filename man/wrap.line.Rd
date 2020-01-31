@@ -73,9 +73,9 @@ before applying the \code{reorder} arguments.)}
 \description{
 Creates line plots for numerical dependent variables, adds error bars,
 and prints descriptive statistics in a summary table. The function creates plots for
-up to 3 factors total, including 1 within-subjects factor (corresponding to the path
+up to 3 factors total, including 1 within-subjects factor (corresponding to the default path
 of each line) and 0-2 between-subjects factors. The function delegates the primary
-computations to \code{\link[ggplot2]{ggplot}}. Error bars are ±1 SE.
+computations to \code{\link[ggplot2]{ggplot}}.
 }
 \examples{
 ## Line plot with 1 within-subjects factor

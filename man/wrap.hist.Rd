@@ -51,7 +51,7 @@ along the y axis; if \code{FALSE}, the plot displays counts}
 containing font sizes}
 }
 \description{
-Creates histogram plot for numerical dependent variables and prints
+Creates histogram plots for numerical dependent variables and prints
 descriptive statistics in a summary table. The function delegates the primary
 computations to \code{\link[ggplot2]{ggplot}}.
 }
