@@ -33,21 +33,35 @@ wrap.lm <- function(formula,standardized=FALSE) {
   summary <- summary(lm(formula))
   confint_unstandard <- confint(lm(formula))
   summary_standard <- std_beta(lm(formula))
+  if(nrow(summary$coefficients)==0) {return("Error: You did not enter a model.")}
+  if(length(summary_standard$term)==0) {return("Error: You did not enter a model.")}
 
   df_name <- ""
-  if(regexpr("\\$",rownames(summary$coefficients)[2])>0) {
-    df_name <- substr(rownames(summary$coefficients)[2],1,regexpr("\\$",rownames(summary$coefficients)[2])[1]-1)
-    df_name <- paste(df_name,"\\$",sep="")
+  if(nrow(summary$coefficients)>1) {
+    if(regexpr("\\$",rownames(summary$coefficients)[2])>0) {
+      df_name <- substr(rownames(summary$coefficients)[2],1,regexpr("\\$",rownames(summary$coefficients)[2])[1]-1)
+      df_name <- paste(df_name,"\\$",sep="")
+    }
   }
 
-  p <- pf(summary$fstatistic[1], summary$fstatistic[2], summary$fstatistic[3],lower.tail = FALSE)
-  if(p < .001) {
-    clip <- paste("# Model: R^2 = ",wrap.rd(summary$r.squared,2),", F(",summary$fstatistic[2],", ",summary$fstatistic[3],") = ",wrap.rd0(summary$fstatistic[1],2),", p < .001","\n","\n",sep="")
+  if(nrow(summary$coefficients)==1) {
+    if(regexpr("\\$",rownames(summary$coefficients)[1])>0) {
+      df_name <- substr(rownames(summary$coefficients)[1],1,regexpr("\\$",rownames(summary$coefficients)[1])[1]-1)
+      df_name <- paste(df_name,"\\$",sep="")
+    }
   }
-  if(p >= .001) {
-    clip <- paste("# Model: R^2 = ",wrap.rd(summary$r.squared,2),", F(",summary$fstatistic[2],", ",summary$fstatistic[3],") = ",wrap.rd0(summary$fstatistic[1],2),", p = ",wrap.rd(p,3),"\n","\n",sep="")
+  
+  temp_clip <- ""
+  if(is.null(summary$fstatistic)==F) {
+    p <- pf(summary$fstatistic[1], summary$fstatistic[2], summary$fstatistic[3],lower.tail = FALSE)
+    if(p < .001) {
+      clip <- paste("# Model: R^2 = ",wrap.rd(summary$r.squared,2),", F(",summary$fstatistic[2],", ",summary$fstatistic[3],") = ",wrap.rd0(summary$fstatistic[1],2),", p < .001","\n","\n",sep="")
+    }
+    if(p >= .001) {
+      clip <- paste("# Model: R^2 = ",wrap.rd(summary$r.squared,2),", F(",summary$fstatistic[2],", ",summary$fstatistic[3],") = ",wrap.rd0(summary$fstatistic[1],2),", p = ",wrap.rd(p,3),"\n","\n",sep="")
+    }
+    temp_clip <- paste("\n",clip,sep="")
   }
-  temp_clip <- paste("\n",clip,sep="")
 
   # Unstandardized regression coefficients
   if(standardized==F) {
@@ -67,7 +81,7 @@ wrap.lm <- function(formula,standardized=FALSE) {
       }
     )
   }
-
+  
   # Standardized regression coefficients
   if(standardized==T) {
     if(rownames(summary(lm(formula))$coefficients)[1]=="(Intercept)") {
