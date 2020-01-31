@@ -11,7 +11,7 @@
 #' @param iv1,iv2,iv3 Column vectors containing the independent variables
 #' @param errorbar Character string specifying the length of the error bars:
 #' \code{"se"} displays +/-1 standard error; \code{"ci"} displays 95\% confidence intervals
-#' without p-value adjustment
+#' without p-value adjustment; \code{"none"} omits error bars
 #' @param ylim Numeric vector containing lower and upper y-axis limits
 #' @param ymajor Numeric argument representing spacing of y-axis tick marks
 #' @param ylab Character string containing the y-axis label
@@ -78,8 +78,8 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
   if(is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {return("Error: You inputted 1 within-subjects factor and 3 between-subjects factors. Must input 3 factors maximum.")}
   if(is.null(ylim)==F) {if(length(ylim)!=2) {return("Error: ylim must have two elements (e.g., ylim = c(0,10)).")}}
   if(is.null(ylim)==T&is.null(ymajor)==F) {return("Error: Must input argument ylim (y-axis limits) to specify ymajor (spacing of y-axis tick marks).")}
-  if(is.null(errorbar)) {return("Error: Parameter errorbar must equal se or ci.")}
-  if(errorbar!="se"&errorbar!="ci") {return("Error: Parameter errorbar must equal se or ci.")}
+  if(is.null(errorbar)) {return("Error: Parameter errorbar must equal se, ci, or none.")}
+  if(errorbar!="se"&errorbar!="ci"&errorbar!="none") {return("Error: Parameter errorbar must equal se, ci, or none.")}
   
   # Formatting
   if(is.null(title)==T & grepl("\\$",toString(substitute(dv1)))==T& is.data.frame(dv1)==F) {title <- toString(substring(deparse(substitute(as.numeric(dv1))),str_locate_all(pattern=coll('$'),deparse(substitute(as.numeric(dv1))))[[1]][1]+1,nchar(deparse(substitute(as.numeric(dv1))))-1))}
@@ -541,59 +541,66 @@ wrap.bar <- function(dv1,iv1=NULL,iv2=NULL,iv3=NULL,errorbar="se",ylim=NULL,
   
   # Between-subjects DV; no between-subjects IVs
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==T) {
+    
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
     
     assign(as.character(summary[1,1]),summary[1,1])
-    plot <- eval(parse(text=paste("ggplot(summary,aes(x=",paste("`",as.character(summary[1,1]),"`",sep=""),",y=summary[[2]])) + coord_cartesian(ylim=ylim) + labs(title=title) + theme(plot.title=element_text(face=",shQuote("bold"),",color= ",shQuote("black"),",size=size.title))+theme(plot.title = element_text(color= ",shQuote("black"),",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=element_blank())+labs(y=ylab)+labs(x=xlab)+geom_bar(size=1,stat=",shQuote("identity"),",color=",shQuote("black"),",position=position_dodge(width=0.75),width=0.75, fill = ",shQuote("gray80"),")  +fill+legend+theme(plot.background = element_rect(fill = ",shQuote("white"),", colour = ",shQuote("white"),"))+ theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= ",shQuote("black"),"))+scale_y_continuous+ theme(strip.background = element_rect(fill=",shQuote("white"),"))+theme(strip.text.x = element_text(size = size.panel.title,face=",shQuote("bold"),",color=",shQuote("black"),"))+theme(panel.background = element_rect(colour = ",shQuote("black"),", fill = ",shQuote("white"),", size = 1),panel.border = element_rect(colour = ",shQuote("black"),", fill=NA, size=1),axis.line = element_line(colour = ",shQuote("black"),",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour=",shQuote("gray21"),",position=position_dodge(.75))")))
+    plot <- eval(parse(text=paste("ggplot(summary,aes(x=",paste("`",as.character(summary[1,1]),"`",sep=""),",y=summary[[2]])) + coord_cartesian(ylim=ylim) + labs(title=title) + theme(plot.title=element_text(face=",shQuote("bold"),",color= ",shQuote("black"),",size=size.title))+theme(plot.title = element_text(color= ",shQuote("black"),",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=element_blank())+labs(y=ylab)+labs(x=xlab)+geom_bar(size=1,stat=",shQuote("identity"),",color=",shQuote("black"),",position=position_dodge(width=0.75),width=0.75, fill = ",shQuote("gray80"),")  +fill+legend+theme(plot.background = element_rect(fill = ",shQuote("white"),", colour = ",shQuote("white"),"))+ theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= ",shQuote("black"),"))+scale_y_continuous+ theme(strip.background = element_rect(fill=",shQuote("white"),"))+theme(strip.text.x = element_text(size = size.panel.title,face=",shQuote("bold"),",color=",shQuote("black"),"))+theme(panel.background = element_rect(colour = ",shQuote("black"),", fill = ",shQuote("white"),", size = 1),panel.border = element_rect(colour = ",shQuote("black"),", fill=NA, size=1),axis.line = element_line(colour = ",shQuote("black"),",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+if(errorbar!=",shQuote("none"),") {geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour=",shQuote("gray21"),",position=position_dodge(.75))}")))
   }
 
   # Between-subjects DV; 1 between-subjects IV
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==F&is.null(iv2)==T) {
+    
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
     plot <- ggplot(summary,aes(x=summary[[1]],y=summary[[2]])) + coord_cartesian(ylim=ylim) + labs(title=title) + theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",fill="gray80",position=position_dodge(width=0.75),width=0.75)  + guides(fill=guide_legend(title=iv_1)) + legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
-      geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+      if(errorbar!="none") {geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))}
   }
 
   # Between-subjects DV; 2 between-subjects IVs
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==T) {
+    
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[5]]-1)}
     plot <- ggplot(summary, aes(fill=summary[[1]], y=summary[[3]], x=summary[[2]]))+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75) + guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
-      geom_errorbar(aes(ymin=summary[[3]]-summary[[4]]*errorbar_multiplier,ymax=summary[[3]]+summary[[4]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+      if(errorbar!="none") {geom_errorbar(aes(ymin=summary[[3]]-summary[[4]]*errorbar_multiplier,ymax=summary[[3]]+summary[[4]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))}
   }
 
   # Between-subjects DV; 3 between-subjects IVs
   if(is.data.frame(dv1)==F&(any(class(dv1)=="numeric")|any(class(dv1)=="integer"))&is.null(iv1)==F&is.null(iv2)==F&is.null(iv3)==F) {
+    
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[6]]-1)}
     plot <- ggplot(summary, aes(fill=summary[[3]], x=summary[[2]], y=summary[[4]]))+ facet_wrap(~ summary[[1]],scales="free_x")+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
-      geom_errorbar(aes(ymin=summary[[4]]-summary[[5]]*errorbar_multiplier,ymax=summary[[4]]+summary[[5]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+      if(errorbar!="none") {geom_errorbar(aes(ymin=summary[[4]]-summary[[5]]*errorbar_multiplier,ymax=summary[[4]]+summary[[5]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))}
   }
 
   # Within-subjects DV; no between-subjects IVs
   if(is.data.frame(dv1)==T&is.null(iv1)==T) {
+    
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[4]]-1)}
     plot <- ggplot(summary, aes(y=summary[[2]], x=summary[[1]],fill=levels(summary[[1]])))+coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75,fill="gray80")+ guides(fill=guide_legend(title=iv_1)) +fill+theme(legend.position="none",legend.title=element_blank(),legend.text = element_text(color="black",size=size.legend.text))+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
-      geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+      if(errorbar!="none") {geom_errorbar(aes(ymin=summary[[2]]-summary[[3]]*errorbar_multiplier,ymax=summary[[2]]+summary[[3]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))}
   }
 
   # Within-subjects DV; 1 between-subjects IV
   if(is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==T) {
+    
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[5]]-1)}
     plot <- ggplot(summary, aes(fill=summary[[2]], x=summary[[1]], y=summary[[3]]))+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
-      geom_errorbar(aes(ymin=summary[[3]]-summary[[4]]*errorbar_multiplier,ymax=summary[[3]]+summary[[4]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+      if(errorbar!="none") {geom_errorbar(aes(ymin=summary[[3]]-summary[[4]]*errorbar_multiplier,ymax=summary[[3]]+summary[[4]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))}
   }
 
   # Within-subjects DV; 2 between-subjects IVs
   if(is.data.frame(dv1)==T&is.null(iv1)==F&is.null(iv2)==F) {
+    
     if(errorbar=="se") {errorbar_multiplier = 1}
     if(errorbar=="ci") {errorbar_multiplier = qt(.975,summary[[6]]-1)}
     plot <- ggplot(summary, aes(fill=summary[[2]], x=summary[[1]], y=summary[[4]]))+ facet_wrap(~ summary[[3]],scales="free_x")+ coord_cartesian(ylim=ylim)+ labs(title=title) +theme(plot.title=element_text(face="bold",color= "black",size=size.title))+theme(plot.title = element_text(color= "black",hjust = 0.5))+theme(axis.text.x = axis.text.x)+labs(x=xlab)+labs(y=ylab)+geom_bar(size=1,stat="identity",color="black",position=position_dodge(width=0.75),width=0.75)+ guides(fill=guide_legend(title=iv_1)) +fill+ legend+theme(plot.background = element_rect(fill = "white", colour = "white"))+theme(panel.grid.major.y = element_blank(),panel.grid.major.x=element_blank(),panel.grid.minor.y=element_blank(),panel.grid.minor.x=element_blank())+theme(axis.text.y=element_text(size=size.axis.text.y,color= "black"))+scale_y_continuous+ theme(strip.background = element_rect(fill="white"))+theme(strip.text.x = element_text(size = size.panel.title,face="bold",color="black"))+theme(panel.background = element_rect(colour = "black", fill = "white", size = 1),panel.border = element_rect(colour = "black", fill=NA, size=1),axis.line = element_line(colour = "black",size=1))+theme(axis.ticks = element_line(colour = color_theme1,size=1))+
-      geom_errorbar(aes(ymin=summary[[4]]-summary[[5]]*errorbar_multiplier,ymax=summary[[4]]+summary[[5]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))
+      if(errorbar!="none") {geom_errorbar(aes(ymin=summary[[4]]-summary[[5]]*errorbar_multiplier,ymax=summary[[4]]+summary[[5]]*errorbar_multiplier),width=0.15,size=0.8,colour="gray21",position=position_dodge(.75))}
   }
 
   summary2 <- summary
