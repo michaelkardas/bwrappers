@@ -1,16 +1,16 @@
 #' Linear regression
 #'
 #' @description Performs linear regression analyses. The function delegates
-#' the primary computations to \code{\link[stats]{lm}} and
-#' \code{\link[betas]{betas.lm}}. Note that confidence intervals are computed
-#' using a central t distribution. In the output, R^2 is not adjusted.
+#' the primary computations to \code{\link[stats]{lm}}. Note that confidence
+#' intervals are computed using a central t distribution. In the output, R^2
+#' is not adjusted.
 #'
 #' @param formula The linear model
 #' @param standardized A logical argument: if \code{FALSE}, the function
 #' returns unstandardized coefficients; if \code{TRUE}, the function returns
 #' standardized coefficients
 #'
-#' @seealso \code{\link[stats]{lm}}, \code{\link[betas]{betas.lm}}
+#' @seealso \code{\link[stats]{lm}}
 #'
 #' @examples
 #' ## Linear regression with unstandardized coefficients
@@ -20,7 +20,6 @@
 #' wrap.lm(formula = bdata$DV7 ~ bdata$DV5 * bdata$DV6, standardized = TRUE)
 #' @import stringr stats
 #' @importFrom clipr write_clip
-#' @importFrom betas betas.lm
 #' @export
 wrap.lm <- function(formula,standardized=FALSE) {
 
@@ -29,10 +28,10 @@ wrap.lm <- function(formula,standardized=FALSE) {
   # Error checks
   if(standardized!=FALSE&standardized!=TRUE) {return("Argument standardized must be equal to FALSE or TRUE.")}
   data <- lm(formula)$model
+  model <- lm(formula)
   if(nrow(data)!=rownames(data)[nrow(data)]) {print("Note: Your inputs include one or more NA entries. The function will ignore the rows containing these entries.")}
   summary <- summary(lm(formula))
   confint_unstandard <- confint(lm(formula))
-  summary_standard <- betas.lm(lm(formula))
   if(nrow(summary$coefficients)==0) {return("Error: You did not enter a model.")}
   if(nrow(summary$coefficients)==1&rownames(summary$coefficients)[1]=="(Intercept)") {return("Error: You did not enter a model.")}
   print(paste("Note: Your contrast options are currently set to unordered = ",options('contrasts')$contrasts[[1]],", ordered = ",options('contrasts')$contrasts[[2]],".",sep=""))
@@ -67,6 +66,8 @@ wrap.lm <- function(formula,standardized=FALSE) {
   
   # Unstandardized regression coefficients
   if(standardized==F) {
+    
+    # Output results
     for (i in 1:(nrow(summary$coefficients))) {
       clip <- paste(clip,
                     "# ",gsub(df_name,"",gsub(":"," x ",rownames(summary$coefficients)[i])),": b = ",wrap.rd0(summary$coefficients[i,1],2),", SE = ",wrap.rd0(summary$coefficients[i,2],2),", t(",summary$df[2],") = ",wrap.rd0(summary$coefficients[i,3],2),", p",if (as.numeric(summary$coefficients[i,4]) < .001) {" < .001"},if (as.numeric(summary$coefficients[i,4]) >= .001) {" = "},if (as.numeric(summary$coefficients[i,4]) >= .001) {wrap.rd(summary$coefficients[i,4],3)},", 95% CI = [",wrap.rd0(confint_unstandard[i,1],2),", ",wrap.rd0(confint_unstandard[i,2]),"]","\n",
@@ -86,6 +87,43 @@ wrap.lm <- function(formula,standardized=FALSE) {
 
   # Standardized regression coefficients
   if(standardized==T) {
+    
+    # Compute standardized coefficients and SE. Note that
+    # this code is modeled after betas.lm from package "betas"
+    # but corrects an error that (currently) arises in that
+    # package when the user fits a model without an intercept
+    if(names(model$coefficients)[1]=="(Intercept)") {
+      b <- model$coefficients[-1]
+    }
+    
+    if(names(model$coefficients)[1]!="(Intercept)") {
+      b <- model$coefficients
+    }
+    
+    if(rownames(summary(model)$coefficients)[1]=="(Intercept)") {
+      se <- summary(model)$coefficients[-1, 2]
+    }
+    
+    if(rownames(summary(model)$coefficients)[1]!="(Intercept)") {
+      se <- summary(model)$coefficients[, 2]
+    }
+    
+    X <- qr.X(model$qr)
+    
+    if(names(model$coefficients)[1]=="(Intercept)") {
+      sdx <- apply(X, 2, sd)[-1]
+    }
+    
+    if(names(model$coefficients)[1]!="(Intercept)") {
+      sdx <- apply(X, 2, sd)
+    }
+    
+    sdy <- sd(model$model[, 1])
+    beta <- b * sdx/sdy
+    se.b <- se * sdx/sdy
+    summary_standard <- data.frame(beta = beta, se.beta = se.b)
+
+    # Output results
     if(rownames(summary(lm(formula))$coefficients)[1]=="(Intercept)") {
       clip <- paste(clip,"# (Intercept): Beta = 0.00","\n",sep="")
     }

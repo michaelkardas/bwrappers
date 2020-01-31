@@ -10,7 +10,6 @@ Description: This package contains wrappers and other functions for more
     format, and copy these outputs directly to the clipboard.
 Depends: R (>= 3.2.0)
 Imports:
-    betas,
     clipr,
     devtools,
     dplyr,
