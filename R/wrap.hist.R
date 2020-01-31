@@ -48,6 +48,7 @@ wrap.hist <- function(dv1,likert=F,percent=T,binwidth=1,ylim=NULL,
   if(is.null(xlim)==F) {if(length(xlim)!=2) {return("Error: xlim must have two elements (e.g., xlim = c(0,10)).")}}
   if(is.null(ylim)==F) {if(length(ylim)!=2) {return("Error: ylim must have two elements (e.g., ylim = c(0,10)).")}}
   if(is.null(xlim)==F&likert==T) {if(xlim[1]%%1!=0|xlim[2]%%1!=0) {return("Error: x axis limits must be integers for Likert scale DVs.")}}
+  if(is.null(xlim)==F) {if((xlim[2]-xlim[1])%%binwidth>0) {return("Error: The x-axis range must be evenly divisible by the bin width.")}}
   if(is.null(binwidth)==F&is.null(xlim)==F) {if(binwidth>(xlim[2]-xlim[1])) {return("Error: Bin width must be less than or equal to the difference between the x-axis limits.")}}
 
   if(is.null(title)==T & grepl("\\$",toString(substitute(dv1)))==T) {title <- toString(substring(deparse(substitute(as.numeric(dv1))),str_locate_all(pattern=coll('$'),deparse(substitute(as.numeric(dv1))))[[1]][1]+1,nchar(deparse(substitute(as.numeric(dv1))))-1))}
