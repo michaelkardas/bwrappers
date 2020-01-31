@@ -35,7 +35,7 @@ wrap.lm <- function(formula,standardized=FALSE) {
   if(nrow(summary$coefficients)==0) {return("Error: You did not enter a model.")}
   if(nrow(summary$coefficients)==1&rownames(summary$coefficients)[1]=="(Intercept)") {return("Error: You did not enter a model.")}
   print(paste("Note: Your contrast options are currently set to unordered = ",options('contrasts')$contrasts[[1]],", ordered = ",options('contrasts')$contrasts[[2]],".",sep=""))
-  print(paste("Note: Confidence intervals are computed using a central t distribution. In the output, R^2 is not adjusted."))
+  print(paste("Note: The confidence intervals are computed using a central t distribution. In the output, R^2 is not adjusted."))
   
   df_name <- ""
   if(nrow(summary$coefficients)>1) {
