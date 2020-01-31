@@ -77,7 +77,6 @@ Creates bar plots for numerical dependent variables, adds error bars,
 and prints descriptive statistics in a summary table. The function creates plots
 for up to 3 factors total, including 0-1 within-subjects factors and 0-3 between-
 subjects factors. The function delegates the primary computations to \code{\link[ggplot2]{ggplot}}.
-Error bars are +/-1 SE.
 }
 \examples{
 ## Bar plot with 1 within-subjects factor

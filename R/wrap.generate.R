@@ -2,7 +2,7 @@
 #'
 #' @description Searches the data frame for pairs of columns whose names are identical
 #' except for specific strings that you've embedded within them--such as "T1" versus "T2"
-#' or "Participant1" versus "Participant2--and then generates new columns by computing
+#' or "Participant1" versus "Participant2"--and then generates new columns by computing
 #' sums, differences, or means between pairs of corresponding columns. After generating
 #' columns, the function assigns the revised data frame directly to the Global Environment.
 #'
