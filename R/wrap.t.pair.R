@@ -4,6 +4,7 @@
 #' primary computations to \code{\link[stats]{t.test}}.
 #'
 #' @param dv1,dv2 Column vectors containing the dependent variables
+#' @param within_variation A logical argument: If TRUE, the function uses within-participants variation when computing the effect size; if FALSE, the function does not use within-participants variation when computing the effect size.
 #'
 #' @seealso \code{\link[stats]{t.test}}
 #'
@@ -13,7 +14,7 @@
 #' @import effsize stringr stats
 #' @importFrom clipr write_clip
 #' @export
-wrap.t.pair  <- function(dv1, dv2) {
+wrap.t.pair  <- function(dv1, dv2, within_variation = TRUE) {
   options(scipen=999)
 
   # Error checks
@@ -26,12 +27,13 @@ wrap.t.pair  <- function(dv1, dv2) {
   if(any(complete.cases==F)) {print("Note: Your inputs include one or more NA entries. The function will ignore the rows containing these entries.")}
   dv1 <- dv1[complete.cases]
   dv2 <- dv2[complete.cases]
-
+  if(within_variation!=T&within_variation!=F) {return("Argument within_variation must be TRUE or FALSE.")}
+  
   ## t-test results
   a <- t.test(dv1, dv2, alternative = "two.sided", mu = 0, paired=T, conf.level = 0.95)
 
   # cohen's d
-  b <- (cohen.d(dv1,dv2,paired=T,na.rm=T)$estimate)
+  b <- (cohen.d(dv1,dv2,paired=T,within=within_variation,na.rm=T)$estimate)
 
   if(a$p.value < .001) {
     write_clip(allow_non_interactive = TRUE, content = paste("# paired t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CIdifference = [",wrap.rd0(a$conf.int[1],2),", ",wrap.rd0(a$conf.int[2],2),"], d = ",wrap.rd0(b,2),sep=""))
