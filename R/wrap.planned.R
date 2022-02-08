@@ -52,7 +52,7 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
   }
 
   if(positive!=1|negative!=1) {return("Contrast weights must sum to +1 and -1.")}
-
+  
   # Test for equality of variance
   output <- lawstat::levene.test(dv1,iv1,location="median")
   levene_string <- ""
@@ -79,6 +79,7 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
   if(contrasts(iv1)[1,1]==0&contrasts(iv1)[2,1]==0) {temp1 <- which(contrasts(iv1)[,1]>0)[1]; temp2 <- which(contrasts(iv1)[temp1,]!=0)[2]; contrasts(iv1)[1,temp2] <- 1}
   for (i in 1:(nrow(contrasts(iv1))-1)) {for (j in (i+1):nrow(contrasts(iv1))) {if(contrasts(iv1)[i]==contrasts(iv1)[j]) {contrasts(iv1)[j,ncol(contrasts(iv1))] <- contrasts(iv1)[j,ncol(contrasts(iv1))]+1}}}
   if((length(iv1)-nlevels(iv1))!=aov(dv1~iv1)$df.residual) {for (i in 1:nrow(contrasts(iv1))) {contrasts(iv1)[i,ncol(contrasts(iv1))] <- contrasts(iv1)[i,ncol(contrasts(iv1))]+runif(1)}}
+  for (i in 2:ncol(contrasts(iv1))) {for (j in 1:nrow(contrasts(iv1))) {contrasts(iv1)[j,i] <- runif(1)}}
   if(abs(sum(contrasts(iv1)[1:nlevels_iv1]))>10^-8) {return("Error: Weights in the contrast matrix do not sum to 0. Are you missing values in dv1 or iv1?")}
 
   # compute the ANOVA and contrast statistics
@@ -90,7 +91,7 @@ wrap.planned <- function(dv1,iv1,levels,weights) {
   CIlower <- estimate-SE*qt(c(.025,.975),dfRES)[2]; CIupper <- estimate+SE*qt(c(.025,.975),dfRES)[2]
   d <- estimate/sqrt(MSRES)
   options(contrasts= c(x$contrasts[1],x$contrasts[2])) # reset contrasts to whatever they were before calling this function
-  if((length(iv1)-nlevels(iv1))!=dfRES) {warning("WARNING: Degrees of freedom should, but does not equal the length of iv1 minus the number of levels in iv1. Are you missing data in either iv1 or dv1?")}
+  if((length(iv1)-nlevels(iv1))!=dfRES) {warning("WARNING: Degrees of freedom should, but do not equal the length of iv1 minus the number of levels in iv1. Are you missing data in either iv1 or dv1?")}
 
   print("ASSUMPTIONS: The function assumes categorical (i.e., unordered) independent variables, fixed effects, and equality of variances across conditions. Note that the confidence interval and Cohen's d use mean-square error to estimate variance.")
   if(nchar(levene_string)>0) {print(levene_string)}
