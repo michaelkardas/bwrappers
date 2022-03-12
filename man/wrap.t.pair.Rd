@@ -4,10 +4,12 @@
 \alias{wrap.t.pair}
 \title{T test (paired samples)}
 \usage{
-wrap.t.pair(dv1, dv2)
+wrap.t.pair(dv1, dv2, within_variation = TRUE)
 }
 \arguments{
 \item{dv1, dv2}{Column vectors containing the dependent variables}
+
+\item{within_variation}{A logical argument: If TRUE, the function uses within-participants variation when computing the effect size; if FALSE, the function does not use within-participants variation when computing the effect size.}
 }
 \description{
 Performs paired-samples t tests. The function delegates the

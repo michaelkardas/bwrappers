@@ -11,7 +11,6 @@
 #' wrap.cor(dv1 = bdata$DV3_T1, dv2 = bdata$DV3_T2)
 #'
 #' @import stringr
-#' @importFrom psychometric CIr
 #' @importFrom clipr write_clip
 #' @export
 wrap.cor <- function(dv1, dv2) {
@@ -32,8 +31,8 @@ wrap.cor <- function(dv1, dv2) {
   # correlations
   a <- cor.test(dv1, dv2)
 
-  # confidence intervals
-  b <- CIr(a$estimate,n=length(dv1),level=.95)
+  # confidence intervals, using code from the psychometric package which is currently unavailable on CRAN
+  b <- unlist(list((exp(2 * (list((0.5 * log((1 + a$estimate)/(1 - a$estimate))) - ((-qnorm((1 - .95)/2)) * (1/sqrt((length(dv1)) - 3))), (0.5 * log((1 + a$estimate)/(1 - a$estimate))) + ((-qnorm((1 - .95)/2)) * (1/sqrt((length(dv1)) - 3))))[[1]])) - 1)/(exp(2 * (list((0.5 * log((1 + a$estimate)/(1 - a$estimate))) - ((-qnorm((1 - .95)/2)) * (1/sqrt((length(dv1)) - 3))), (0.5 * log((1 + a$estimate)/(1 - a$estimate))) + ((-qnorm((1 - .95)/2)) * (1/sqrt((length(dv1)) - 3))))[[1]])) + 1), (exp(2 * (list((0.5 * log((1 + a$estimate)/(1 - a$estimate))) - ((-qnorm((1 - .95)/2)) * (1/sqrt((length(dv1)) - 3))), (0.5 * log((1 + a$estimate)/(1 - a$estimate))) + ((-qnorm((1 - .95)/2)) * (1/sqrt((length(dv1)) - 3))))[[2]])) - 1)/(exp(2 * (list((0.5 * log((1 + a$estimate)/(1 - a$estimate))) - ((-qnorm((1 - .95)/2)) * (1/sqrt((length(dv1)) - 3))), (0.5 * log((1 + a$estimate)/(1 - a$estimate))) + ((-qnorm((1 - .95)/2)) * (1/sqrt((length(dv1)) - 3))))[[2]])) + 1)))
 
   if(a$p.value < .001) {
     write_clip(allow_non_interactive = TRUE, content = paste(" # ","r = ",wrap.rd(a$estimate,2),", t(",a$parameter,") = ",wrap.rd0(a$statistic,2),", p < .001, 95% CI = [",wrap.rd(b[1],2),", ",wrap.rd(b[2],2),"]",sep=""))
