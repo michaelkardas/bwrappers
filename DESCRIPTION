@@ -21,7 +21,6 @@ Imports:
     Hmisc,
     lawstat,
     lm.beta,
-    psychometric,
     scales,
     stats,
     stringr,
