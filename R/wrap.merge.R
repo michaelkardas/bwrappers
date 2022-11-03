@@ -65,8 +65,8 @@ wrap.merge <- function(df) {
           }
 
           # Convert to numeric any merged columns that only contain numbers
-          if(all.is.numeric(pull(df[,i]))) {
-            df[,i] <- as.numeric(pull(df[,i]))
+          if(all.is.numeric(pull(as.data.frame(df[,i])))) {
+            df[,i] <- as.numeric(pull(as.data.frame(df[,i])))
           }
         }
       }
