@@ -17,14 +17,14 @@
 #' @importFrom dplyr pull
 #' @export
 wrap.merge <- function(df) {
-
+  
   options(scipen=999)
   
   if(toString(substitute(df)) %in% ls(.GlobalEnv)==F) {return(paste("Error: Cannot find ",substitute(df)," in the Global Environment.",sep=""))}
   df_name <- toString(as.list(match.call(expand.dots = TRUE))[2][[1]])
   identical <- matrix(0,nrow=ncol(df),ncol=ncol(df))
   columnnames <- NULL
-
+  
   # locate sets of identical column names
   for (i in 1:ncol(df)) {
     for (j in i:ncol(df)) {
@@ -34,7 +34,7 @@ wrap.merge <- function(df) {
       }
     }
   }
-
+  
   if(sum(identical)>0) {
     # in the "identical" matrix, assign "0" to all but the first of those identical column names
     for (i in 1:(ncol(df)-1)) {
@@ -44,7 +44,7 @@ wrap.merge <- function(df) {
         }
       }
     }
-
+    
     # error check: ensure that each row contains only one value that is not blank or NA per set of identical column names
     for (i in 1:nrow(identical)) {
       for (j in i:ncol(identical)) {
@@ -55,7 +55,7 @@ wrap.merge <- function(df) {
         }
       }
     }
-
+    
     # look for the value that is not blank or NA, then assign this value to only the first of the repeated columns
     for (i in 1:nrow(identical)) {
       for (j in i:ncol(identical)) {
@@ -63,15 +63,21 @@ wrap.merge <- function(df) {
           for (k in 1:nrow(df)) {
             if(is.na(df[k,i])==T|is.null(df[k,i])==T|df[k,i]=="") {df[k,i] <- df[k,j]}
           }
-
+          
           # Convert to numeric any merged columns that only contain numbers
-          if(all.is.numeric(pull(as.data.frame(df[,i])))) {
-            df[,i] <- as.numeric(pull(as.data.frame(df[,i])))
+          numeric <- 0
+          for (l in 1:nrow(df)) {
+            if(is.numeric(df[l,i]==T)) {
+              numeric <- numeric+1
+            }
+          }
+          if(numeric==nrow(df)) {
+            df[,i] <- as.numeric(df[,i])
           }
         }
       }
     }
-
+    
     # delete the redundant columns
     delete <- NULL
     for (i in 1:ncol(df)) {
@@ -83,7 +89,7 @@ wrap.merge <- function(df) {
     }
     df <- df[,-delete]
   }
-
+  
   # assign the updated data frame to the Global environment
   assign(df_name,df,.GlobalEnv)
   columnnames <- unique(columnnames)
